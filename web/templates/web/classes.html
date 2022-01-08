@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}選課清單{% endblock title %}
+
+{% block style %}
+<style>
+    .card:hover {
+        box-shadow: 0px 5px 10px #00000028;
+    }
+</style>
+{% endblock style %}
+
+{% block content %}
+<h1 class="text-main-color fw-bold">課程清單</h1>
+
+<form action="" method="GET">
+    <div class="row m-3">
+        <div class="col-12 col-md-2 mb-2 mb-md-0">
+            <select class="form-control form-select" name="t">
+                <option selected value="code">課程代碼</option>
+                <option value="name">課程名稱</option>
+                <option value="professor">老師名字</option>
+                <option value="dept">開課系所</option>
+            </select>
+        </div>
+        <div class="col-12 col-md-10">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="請輸入關鍵字..." name="q">
+                <button type="submit" class="btn btn-primary">查詢</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% if class_list %}
+<div class="row justify-content-between">
+    {% for class in class_list %}
+    <a href="" class="col-12 col-sm-6 col-md-4 col-lg-3 text-decoration-none">
+        <div class="card m-2">
+            <div class="card-body">
+                <span class="card-text text-danger fw-bold">{{ class.cCode }}</span>
+                <br>
+                <span class="card-title text-dark fw-bold fs-3">{{ class.cName }}</span>
+                <br>
+                <span class="card-text text-secondary">{{ class.cType }} | {{ class.cDept }}</span>
+                <br>
+                <span class="card-text text-secondary">{{ class.cProfessor }}</span>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    查無此資料，請換個關鍵字重新查詢一次
+</div>
+{% endif %}
+{% endblock %}
