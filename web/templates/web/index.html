@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}中興好課首頁{% endblock title %}
+
+{% block style %}
+<style>
+    .counter {
+        border: 5px solid #5a5a5a;
+        border-radius: 5px;
+    }
+</style>
+{% endblock style %}
+
+{% block content %}
+<div style="padding: 0 5%;" class="text-center">
+    <h1 class="display-2 fw-bold text-main-color">中興好課</h1>
+    <h2 class="display-3 fw-bold text-main-color">NCHU Good Class</h2>
+
+    <hr class="my-5">
+
+    <h3 class="display-5 my-5 fw-bold">選好課，好選課</h3>
+    <div class="fs-4">
+        <p>
+            每到開學時期，選課總是讓人又愛又恨，學生們經常為了選到一門好的通識在Dcard上四處翻文，如果運氣好找到了，但因為大家的評分標準都不同，看完一堆評論後還是頭昏眼花，運氣不好甚至連評論都找不到，只好自己親自踩雷。加上選課每半年就要選一次，每次選課時又忘記上次找過哪些課，只好又自己再重新搜尋，這樣所浪費的時間其實是很可觀的!
+        </p>
+        <p>
+            中興曾經有一個選課小幫手，但因為沒人維護的關係，現在已經沒有運作了…，實在是非常可惜的一件事。
+        </p>
+        <p>
+            我們的目標在建立一個公開公正的平台，匯集所有的修課心得，制定統一的評分標準， 並以清楚的圖表顯示結果，讓選課再也不是一件辛苦事!
+        </p>
+    </div>
+
+    <hr class="my-5">
+
+    <h3 class="display-5 my-5 fw-bold">統計數字</h3>
+    <div class="row justify-content-center">
+        <div class="counter col-12 col-md-3 m-3 p-3">
+            <p class="h3">使用人數</p>
+            <hr>
+            <p class="h3 fw-bold">{{ num_user }}</p>
+        </div>
+        <div class="counter col-12 col-md-3 m-3 p-3">
+            <p class="h3">課程數量</p>
+            <hr>
+            <p class="h3 fw-bold">{{ num_class }}</p>
+        </div>
+        <div class="counter col-12 col-md-3 m-3 p-3">
+            <p class="h3">評論數量</p>
+            <hr>
+            <p class="h3 fw-bold">{{ num_comment }}</p>
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <a class="btn btn-lg btn-main-color" href="#" role="button">開始使用!</a>
+
+</div>
+{% endblock content %}
