@@ -11,4 +11,6 @@ urlpatterns = [
     path('logout/', views.log_out, name="logout"),
     path('user/<int:pk>', views.profile, name="profile"),
     path('user/<int:pk>/edit', views.profile_edit, name="profile_edit"),
+    path('user/<int:pk>/list', views.profile_comment_list, name="profile_comment_list"),
+    path('comment/create/<str:code>', views.comment_create, name="comment_create"),
 ]

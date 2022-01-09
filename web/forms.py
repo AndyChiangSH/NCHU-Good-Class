@@ -36,3 +36,7 @@ class ProfileDeptForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control'}),
         queryset=Department.objects.all().order_by("dDept"),
     )
+
+
+class CommentCreateForm(forms.Form):
+    content = forms.CharField()

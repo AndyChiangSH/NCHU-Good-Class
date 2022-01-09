@@ -38,13 +38,40 @@
 
 <hr>
 
-<h2 class="fw-bold">評論</h2>
+<div class="d-flex justify-content-between flex-wrap">
+    <div>
+        <h2 class="fw-bold">評論</h2>
+    </div>
+    {% if request.user.is_authenticated %}
+    <div>
+        <a class="btn btn-main-color" href="{% url 'comment_create' class.id %}">新增評論</a>
+    </div>
+    {% else %}
+    <div>
+        <a class="btn btn-danger" href="{% url 'login' %}?next={{ request.path }}">登入以評論</a>
+    </div>
+    {% endif %}
+</div>
+
 <div>
+    {% if error == "t" %}
+    <div class="alert alert-danger my-3" role="alert">
+        你已經評論過了!
+    </div>
+    {% endif %}
     {% if comments %}
     {% for comment in comments %}
     <div class="card my-3">
         <div class="card-body">
-            <p class="card-title fw-bold">{{ comment.dept|default:"不公開" }}</p>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <p class="card-title fw-bold mb-0">{{ comment.dept|default:"不公開" }}</p>
+                {% if comment.mUID == request.user.id %}
+                <div>
+                    <a href="" class="text-primary fs-4 me-1"><i class="bi bi-pencil-square"></i></a>
+                    <a href="" class="text-danger fs-4"><i class="bi bi-trash-fill"></i></a>
+                </div>
+                {% endif %}
+            </div>
             <div class="d-flex flex-wrap justify-content-between fw-bold fs-4">
                 <p class="card-text me-5">涼 : <span class="text-main-color">{{ comment.detail.mCool }} / 10</span></p>
                 <p class="card-text me-5">甜 : <span class="text-main-color">{{ comment.detail.mSweet }} / 10</span></p>
@@ -81,7 +108,13 @@
         ],
         datasets: [{
             label: '分數',
-            data: [{{ class.cCool }}, {{ class.cSweet }}, {{ class.cFun }}, {{ class.cLearn }}, {{ class.cJoin }}],
+            data: [
+                {{class.cCool}}, 
+                {{class.cSweet}}, 
+                {{class.cFun}}, 
+                {{class.cLearn}}, 
+                {{class.cJoin}}
+            ],
             fill: true,
             backgroundColor: '#2affd127',
             borderColor: '#16c7a1',

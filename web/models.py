@@ -46,7 +46,7 @@ class Comment(models.Model):
     mFun = models.DecimalField("有趣", max_digits=2, decimal_places=0, default=0)
     mLearn = models.DecimalField("學習", max_digits=2, decimal_places=0, default=0)
     mJoin = models.DecimalField("參與", max_digits=2, decimal_places=0, default=0)
-    mLasttime = models.DateTimeField("最後修改時間", default=timezone.now)
+    mLasttime = models.DateTimeField("最後修改時間", auto_now=True)
 
     def __str__(self):
         return f"{self.mUID}, {self.mCID}"

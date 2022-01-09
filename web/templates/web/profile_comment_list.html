@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %} | 課程: {{ class.cName }}{% endblock title %}
+
+{% block style %}
+<style>
+    .card:hover {
+        box-shadow: 0px 5px 10px #00000028;
+    }
+</style>
+{% endblock style %}
+
+{% block content %}
+<div>
+    {% if comments %}
+    {% for comment in comments %}
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <p class="card-title fw-bold mb-0">{{ comment.mCID }}</p>
+                <div>
+                    <a href="" class="text-primary fs-4 me-1"><i class="bi bi-pencil-square"></i></a>
+                    <a href="" class="text-danger fs-4"><i class="bi bi-trash-fill"></i></a>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap justify-content-between fw-bold fs-4">
+                <p class="card-text me-5">涼 : <span class="text-main-color">{{ comment.mCool }} / 10</span></p>
+                <p class="card-text me-5">甜 : <span class="text-main-color">{{ comment.mSweet }} / 10</span></p>
+                <p class="card-text me-5">有趣 : <span class="text-main-color">{{ comment.mFun }} / 10</span></p>
+                <p class="card-text me-5">學習 : <span class="text-main-color">{{ comment.mLearn }} / 10</span></p>
+                <p class="card-text me-5">參與 : <span class="text-main-color">{{ comment.mJoin }} / 10</span></p>
+            </div>
+            <p class="card-text">{{ comment.mContent|linebreaksbr }}</p>
+            <div class="d-flex flex-wrap justify-content-between">
+                <small class="text-muted">id : {{ comment.id }}</small>
+                <small class="text-muted">最後修改時間 : {{ comment.mLasttime }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="alert alert-warning my-3" role="alert">
+        你還沒寫過評論，趕快去寫吧!
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
