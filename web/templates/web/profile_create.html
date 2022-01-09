@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %} | 註冊{% endblock title %}
+
+{% block style %}
+<style>
+</style>
+{% endblock style %}
+
+{% block content %}
+<h3>修改個人資料</h3>
+
+<form action="" method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <br>
+    <input class="btn btn-success" type="submit" value="註冊" />
+</form>
+{% endblock content %}

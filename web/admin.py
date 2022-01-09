@@ -57,6 +57,6 @@ class CommentAdmin(ImportExportModelAdmin):
     resource_class = CommentResource
     list_display = ('id', 'mUID', 'mCID', 'mLasttime')
     search_fields = ('id', 'mUID', 'mCID')
-    ordering = ('mLasttime', 'id')
+    ordering = ('-mLasttime', 'id')
 
 admin.site.register(Comment, CommentAdmin)

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} | 課程 | {{ class.cName }}{% endblock title %}
+{% block title %} | 課程: {{ class.cName }}{% endblock title %}
 
 {% block style %}
 <style>
@@ -44,7 +44,7 @@
     {% for comment in comments %}
     <div class="card my-3">
         <div class="card-body">
-            <p class="card-title fw-bold">{{ comment.dept }}</p>
+            <p class="card-title fw-bold">{{ comment.dept|default:"不公開" }}</p>
             <div class="d-flex flex-wrap justify-content-between fw-bold fs-4">
                 <p class="card-text me-5">涼 : <span class="text-main-color">{{ comment.detail.mCool }} / 10</span></p>
                 <p class="card-text me-5">甜 : <span class="text-main-color">{{ comment.detail.mSweet }} / 10</span></p>

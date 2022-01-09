@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %} | 註冊{% endblock title %}
+
+{% block style %}
+<style>
+</style>
+{% endblock style %}
+
+{% block content %}
+<h1 class="text-main-color fw-bold">註冊</h1>
+
+{% if error %}
+<div class="alert alert-danger my-3" role="alert">
+    {{ error_msg }}
+</div>
+{% endif %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <br>
+    <input class="btn btn-lg btn-main-color" type="submit" value="註冊" />
+</form>
+{% endblock content %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %} | 登入{% endblock title %}
+
+{% block style %}
+<style>
+</style>
+{% endblock style %}
+
+{% block content %}
+<h1 class="text-main-color fw-bold">登入</h1>
+
+{% if error %}
+<div class="alert alert-danger my-3" role="alert">
+    帳號或密碼有誤! 請再重新輸入一次
+</div>
+{% endif %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <br>
+    <input class="btn btn-lg btn-main-color mb-3" type="submit" value="登入" />
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
+<p>還沒有帳號嗎? <a class="link-main-color" href="{% url 'register' %}">請點擊這邊註冊</a></p>
+{% endblock content %}

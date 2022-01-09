@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} | 修改個人資料: {{ request.user }}{% endblock title %}
+
+{% block style %}
+{% endblock style %}
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <br>
+    <input class="btn btn-main-color mb-3" type="submit" value="更新" />
+</form>
+{% endblock content %}
