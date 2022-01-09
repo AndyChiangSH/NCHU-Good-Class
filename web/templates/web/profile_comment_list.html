@@ -22,7 +22,8 @@
                     <a href="{% url 'comment_edit' comment.id %}?next={{ request.path }}"
                         class="text-primary fs-4 me-1">
                         <i class="bi bi-pencil-square"></i></a>
-                    <a href="" class="text-danger fs-4"><i class="bi bi-trash-fill"></i></a>
+                    <a href="{% url 'comment_delete' comment.id %}?next={{ request.path }}" class="text-danger fs-4"><i
+                            class="bi bi-trash-fill"></i></a>
                 </div>
             </div>
             <div class="d-flex flex-wrap justify-content-between fw-bold fs-4">

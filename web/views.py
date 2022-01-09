@@ -281,7 +281,7 @@ def comment_create(request, code):
 
 # 編輯評論
 @login_required(login_url="login")
-def comment_edit(request, pk):
+def comment_edit(request, pk=None):
     if pk == None:
         return redirect("/")
     
@@ -327,3 +327,35 @@ def comment_edit(request, pk):
 
     return render(request, 'web/comment_edit.html', context)
 
+
+# 刪除評論
+@login_required(login_url="login")
+def comment_delete(request, pk=None):
+    if pk == None:
+        return redirect("/")
+    
+    try:
+        comment = Comment.objects.get(id=pk)
+    except Comment.DoesNotExist:
+        raise Http404('Comment does not exist')
+
+    user = request.user
+    if user.id != comment.mUID.id or pk == None:
+        return redirect("/")
+    
+    if request.method == "POST":
+        next = request.POST["next"]
+        comment.delete()
+        
+        return redirect(next)
+    else:
+        try:
+            next = request.GET["next"]
+        except:
+            pass
+
+        context = {
+            "next": next,
+        }
+
+        return render(request, 'web/comment_delete.html', context)

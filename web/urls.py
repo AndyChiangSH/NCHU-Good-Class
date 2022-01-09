@@ -14,4 +14,5 @@ urlpatterns = [
     path('user/<int:pk>/list', views.profile_comment_list, name="profile_comment_list"),
     path('comment/create/<str:code>', views.comment_create, name="comment_create"),
     path('comment/edit/<int:pk>', views.comment_edit, name="comment_edit"),
+    path('comment/delete/<int:pk>', views.comment_delete, name="comment_delete"),
 ]

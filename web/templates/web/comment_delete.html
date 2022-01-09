@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %} | 刪除評論{% endblock title %}
+
+{% block style %}
+{% endblock style %}
+
+{% block content %}
+<h2 class="text-main-color fw-bold mb-3">刪除評論</h2>
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <p>確定要刪除這篇評論嗎? (將永久刪除!!!)</p>
+    <a class="btn btn-success mb-3" href="{{ next }}">取消</a>
+    <input class="btn btn-danger mb-3" type="submit" value="確定" />
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
+{% endblock content %}
