@@ -219,17 +219,20 @@ def profile_comment_list(request, pk):
     return render(request, 'web/profile_comment_list.html', context)
 
 
-def check_number_range(num):
-    if num > 10 or num < 0:
-        return False
-    else:
-        return True
 
-def check_string_range(string):
+def check_number(num):
+    if num != None:
+        if int(num) >= 0 and int(num) <= 10:
+            return True
+
+    return False
+
+def check_string(string):
     if len(string) > 1000 or len(string) < 10:
         return False
     else:
         return True
+
 
 # 新增評論
 @login_required(login_url="login")
@@ -244,38 +247,83 @@ def comment_create(request, code):
         raise Http404('Class does not exist')
     
     comments = Comment.objects.filter(mCID=class_).filter(mUID=user)
-    print(comments)
 
     if len(comments) == 0:
         if request.method == "POST":
-            cool = int(request.POST["cool"])
-            sweet = int(request.POST["sweet"])
-            fun = int(request.POST["fun"])
-            learn = int(request.POST["learn"])
-            join = int(request.POST["join"])
-            content = str(request.POST["content"])
+            cool = request.POST["cool"]
+            sweet = request.POST["sweet"]
+            fun = request.POST["fun"]
+            learn = request.POST["learn"]
+            join = request.POST["join"]
+            content = request.POST["content"]
             lasttime = timezone.now()
 
-            if check_number_range(cool) and check_number_range(sweet) and check_number_range(fun) and check_number_range(learn) and check_number_range(join) and check_string_range(content):
+            if check_number(cool) and check_number(sweet) and check_number(fun) and check_number(learn) and check_number(join) and check_string(content):
                 row = Comment.objects.create(
                     mCID=class_, 
                     mUID=user, 
-                    mCool=cool,
-                    mSweet=sweet,
-                    mFun=fun, 
-                    mLearn=learn, 
-                    mJoin=join, 
+                    mCool=int(cool),
+                    mSweet=int(sweet),
+                    mFun=int(fun), 
+                    mLearn=int(learn), 
+                    mJoin=int(join), 
                     mContent=content, 
                     mLasttime=lasttime
                 )
                 row.save()
-                print("create!")
 
-            return redirect(f"/web/class/{code}")
-        else:
-            return render(request, 'web/comment_create.html')
+                return redirect(f"/web/class/{code}")
+
+        return render(request, 'web/comment_create.html')
     else:
-        print("repeat!")
         return redirect(f"/web/class/{code}/?error=t")
+
+
+# 編輯評論
+@login_required(login_url="login")
+def comment_edit(request, pk):
+    if pk == None:
+        return redirect("/")
     
-    
+    try:
+        comment = Comment.objects.get(id=pk)
+    except Comment.DoesNotExist:
+        raise Http404('Comment does not exist')
+
+    user = request.user
+    if user.id != comment.mUID.id or pk == None:
+        return redirect("/")
+
+    next = "/"
+    if request.method == "POST":
+        cool = request.POST["cool"]
+        sweet = request.POST["sweet"]
+        fun = request.POST["fun"]
+        learn = request.POST["learn"]
+        join = request.POST["join"]
+        content = str(request.POST["content"])
+        next = request.POST["next"]
+
+        if check_number(cool) and check_number(sweet) and check_number(fun) and check_number(learn) and check_number(join) and check_string(content):
+            comment.mCool=int(cool)
+            comment.mSweet=int(sweet)
+            comment.mFun=int(fun)
+            comment.mLearn=int(learn)
+            comment.mJoin=int(join)
+            comment.mContent=content
+            comment.save()
+
+            return redirect(next)
+    else:
+        try:
+            next = request.GET["next"]
+        except:
+            pass
+        
+    context = {
+        "comment": comment.__dict__,
+        "next": next,
+    }
+
+    return render(request, 'web/comment_edit.html', context)
+

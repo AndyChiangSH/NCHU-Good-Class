@@ -41,11 +41,11 @@ class Comment(models.Model):
     mUID  = models.ForeignKey(to=User, on_delete=models.CASCADE)
     mCID = models.ForeignKey(to=Class, on_delete=models.CASCADE)
     mContent = models.TextField("評論內容", max_length=1000)
-    mCool = models.DecimalField("涼", max_digits=2, decimal_places=0, default=0)
-    mSweet = models.DecimalField("甜", max_digits=2, decimal_places=0, default=0)
-    mFun = models.DecimalField("有趣", max_digits=2, decimal_places=0, default=0)
-    mLearn = models.DecimalField("學習", max_digits=2, decimal_places=0, default=0)
-    mJoin = models.DecimalField("參與", max_digits=2, decimal_places=0, default=0)
+    mCool = models.IntegerField("涼", default=0)
+    mSweet = models.IntegerField("甜", default=0)
+    mFun = models.IntegerField("有趣", default=0)
+    mLearn = models.IntegerField("學習", default=0)
+    mJoin = models.IntegerField("參與", default=0)
     mLasttime = models.DateTimeField("最後修改時間", auto_now=True)
 
     def __str__(self):

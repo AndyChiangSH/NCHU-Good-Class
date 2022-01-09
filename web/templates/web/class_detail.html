@@ -67,7 +67,7 @@
                 <p class="card-title fw-bold mb-0">{{ comment.dept|default:"不公開" }}</p>
                 {% if comment.mUID == request.user.id %}
                 <div>
-                    <a href="" class="text-primary fs-4 me-1"><i class="bi bi-pencil-square"></i></a>
+                    <a href="{% url 'comment_edit' comment.detail.id %}?next={{ request.path }}" class="text-primary fs-4 me-1"><i class="bi bi-pencil-square"></i></a>
                     <a href="" class="text-danger fs-4"><i class="bi bi-trash-fill"></i></a>
                 </div>
                 {% endif %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %} | 新增評論{% endblock title %}
+
+{% block style %}
+{% endblock style %}
+
+{% block content %}
+<h2 class="text-main-color fw-bold mb-3">修改評論</h2>
+
+<form action="" method="POST">
+    {% csrf_token %}
+
+    <h3>評分</h3>
+    <div class="form-text">請選擇0~10的數字，數字越高表示程度越高</div>
+    <div class="row my-3">
+        <div class="col-12 col-md-2">
+            <label for="cool" class="form-label">涼</label>
+            <input type="number" name="cool" id="cool" min="0" max="10" value="{{ comment.mCool }}" required>
+        </div>
+        <div class="col-12 col-md-2">
+            <label for="sweet" class="form-label">甜</label>
+            <input type="number" name="sweet" id="sweet" min="0" max="10" value="{{ comment.mSweet }}" required>
+        </div>
+        <div class="col-12 col-md-2">
+            <label for="fun" class="form-label">有趣</label>
+            <input type="number" name="fun" id="fun" min="0" max="10" value="{{ comment.mFun }}" required>
+        </div>
+        <div class="col-12 col-md-2">
+            <label for="learn" class="form-label">學習</label>
+            <input type="number" name="learn" id="learn" min="0" max="10" value="{{ comment.mLearn }}" required>
+        </div>
+        <div class="col-12 col-md-2">
+            <label for="join" class="form-label">參與</label>
+            <input type="number" name="join" id="join" min="0" max="10" value="{{ comment.mJoin }}" required>
+        </div>
+    </div>
+
+    <h3>評論</h3>
+    <div class="my-3">
+        <label for="content" class="form-label">內容</label>
+        <div class="form-text">請輸入10~100字的評論內容</div>
+        <textarea class="form-control" id="content" rows="5" name="content" minlength="10" maxlength="100"
+            required>{{ comment.mContent }}</textarea>
+    </div>
+
+    <input class="btn btn-success mb-3" type="submit" value="更新" />
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
+{% endblock content %}
