@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %} | 課程 | {{ class.cName }}{% endblock title %}
+
+{% block style %}
+<style>
+    .card:hover {
+        box-shadow: 0px 5px 10px #00000028;
+    }
+</style>
+{% endblock style %}
+
+{% block content %}
+<p class="text-danger fw-bold fs-3">{{ class.id }}</p>
+<h1 class="fw-bold">{{ class.cName }}</h1>
+<h2>{{ class.cEn_name }}</h2>
+<p class="h3 mt-3">{{ class.cProfessor }}</p>
+<p class="h4">{{ class.cType }} | {{ class.cDept }} | {{ class.cCredit }}學分 | {{ class.cLang }}授課</p>
+
+<hr class="my-4">
+
+<h2 class="fw-bold">評分</h2>
+<div class="row">
+    <div class="col-12 col-md-4">
+        <canvas id="radarChart"></canvas>
+    </div>
+    <div class="col-0 col-md-2"></div>
+    <div class="col-12 col-md-6">
+        <div class="list-unstyled h3 fw-bold">
+            <p>甜 : <span class="text-main-color">{{ class.cCool }} / 10</span></p>
+            <p>涼 : <span class="text-main-color">{{ class.cSweet }} / 10</span></p>
+            <p>有趣 : <span class="text-main-color">{{ class.cFun }} / 10</span></p>
+            <p>學習 : <span class="text-main-color">{{ class.cLearn }} / 10</span></p>
+            <p>參與 : <span class="text-main-color">{{ class.cJoin }} / 10</span></p>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<h2 class="fw-bold">評論</h2>
+<div>
+    {% if comments %}
+    {% for comment in comments %}
+    <div class="card my-3">
+        <div class="card-body">
+            <p class="card-title fw-bold">{{ comment.dept }}</p>
+            <div class="d-flex flex-wrap justify-content-between fw-bold fs-4">
+                <p class="card-text me-5">涼 : <span class="text-main-color">{{ comment.detail.mCool }} / 10</span></p>
+                <p class="card-text me-5">甜 : <span class="text-main-color">{{ comment.detail.mSweet }} / 10</span></p>
+                <p class="card-text me-5">有趣 : <span class="text-main-color">{{ comment.detail.mFun }} / 10</span></p>
+                <p class="card-text me-5">學習 : <span class="text-main-color">{{ comment.detail.mLearn }} / 10</span></p>
+                <p class="card-text me-5">參與 : <span class="text-main-color">{{ comment.detail.mJoin }} / 10</span></p>
+            </div>
+            <p class="card-text">{{ comment.detail.mContent|linebreaksbr }}</p>
+            <div class="d-flex flex-wrap justify-content-between">
+                <small class="text-muted">id : {{ comment.detail.id }}</small>
+                <small class="text-muted">最後修改時間 : {{ comment.detail.mLasttime }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="alert alert-warning my-3" role="alert">
+        尚未有人評論，快登入成為第一個評論的人吧!
+    </div>
+    {% endif %}
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script>
+    const data = {
+        labels: [
+            '甜',
+            '涼',
+            '有趣',
+            '學習',
+            '參與',
+        ],
+        datasets: [{
+            label: '分數',
+            data: [{{ class.cCool }}, {{ class.cSweet }}, {{ class.cFun }}, {{ class.cLearn }}, {{ class.cJoin }}],
+            fill: true,
+            backgroundColor: '#2affd127',
+            borderColor: '#16c7a1',
+            pointBackgroundColor: '#11a081',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#11a081'
+        }]
+    };
+
+    const config = {
+        type: 'radar',
+        data: data,
+        options: {
+            elements: {
+                line: {
+                    borderWidth: 3
+                },
+            },
+            scales: {
+                r: {
+                    angleLines: {
+                        display: false
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 10
+                }
+            }
+        },
+    };
+</script>
+<script>
+    Chart.defaults.font.size = 15;
+    const radarChart = new Chart(
+        document.getElementById('radarChart'),
+        config
+    );
+</script>
+{% endblock content %}

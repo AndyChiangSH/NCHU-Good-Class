@@ -130,3 +130,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Import_export setting
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000

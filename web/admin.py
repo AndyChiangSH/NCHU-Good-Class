@@ -7,6 +7,8 @@ from import_export.admin import ImportExportModelAdmin
 class DepartmentResource(resources.ModelResource):
     class Meta:
         model = Department
+        skip_unchanged = True
+        report_skipped = False
         fields = ('id', 'dDept')
 
 class DepartmentAdmin(ImportExportModelAdmin):
@@ -21,12 +23,14 @@ admin.site.register(Department, DepartmentAdmin)
 class ClassResource(resources.ModelResource):
     class Meta:
         model = Class
-        fields = ('id', 'cCode', 'cName', 'cEn_name', 'cProfessor', 'cDept', 'cType', 'cCredit', 'cLang')
+        skip_unchanged = True
+        report_skipped = False
+        fields = ('id', 'cName', 'cEn_name', 'cProfessor', 'cDept', 'cType', 'cCredit', 'cLang')
 
 class ClassAdmin(ImportExportModelAdmin):
     resource_class = ClassResource
-    list_display = ('id', 'cCode', 'cName', 'cEn_name', 'cProfessor', 'cDept', 'cType', 'cCredit', 'cLang')
-    search_fields = ('id', 'cCode', 'cName', 'cEn_name', 'cProfessor', 'cDept', 'cType', 'cCredit', 'cLang')
+    list_display = ('id', 'cName', 'cEn_name', 'cProfessor', 'cDept', 'cType', 'cCredit', 'cLang')
+    search_fields = ('id', 'cName', 'cEn_name', 'cProfessor', 'cDept', 'cType', 'cCredit', 'cLang')
     ordering = ('id', )
 
 admin.site.register(Class, ClassAdmin)
