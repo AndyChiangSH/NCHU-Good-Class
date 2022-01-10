@@ -68,7 +68,7 @@
 <body>
     <nav class="navbar navbar-expand-md navbar-dark" style="background-color: #11a081;">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold fs-4" href="{% url 'index' %}">中興好課</a>
+            <a class="navbar-brand fw-bold fs-4" href="{% url 'index' %}">中興好課 NCHU Good Class</a>
             <button class=" navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -101,51 +101,6 @@
     <div class="container py-5">
         {% block content %}
         {% endblock content %}
-
-        {% block pagination %}
-        {% if is_paginated %}
-        <div class="d-flex mt-3">
-            <nav>
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ request.path }}?page={{ page_obj.previous_page_number }}"
-                            aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ request.path }}?page={{ page_obj.previous_page_number }}">
-                            {{page_obj.previous_page_number }}
-                        </a>
-                    </li>
-                    {% endif %}
-                    <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ request.path }}?page={{ page_obj.next_page_number }}">
-                            {{ page_obj.next_page_number }}
-                        </a>
-                    </li>
-                    {% endif %}
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ request.path }}?page={{ page_obj.next_page_number }}"
-                            aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-            <div class="ms-3">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-            </div>
-        </div>
-        {% endif %}
-        {% endblock %}
     </div>
 
     <div class="container footer">

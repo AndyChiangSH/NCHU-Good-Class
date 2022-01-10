@@ -17,15 +17,16 @@
     <div class="row m-3">
         <div class="col-12 col-md-2 mb-2 mb-md-0">
             <select class="form-control form-select" name="t">
-                <option selected value="id">課程代碼</option>
-                <option value="name">課程名稱</option>
-                <option value="professor">老師名字</option>
-                <option value="dept">開課系所</option>
+                <option value="id" {% if request.GET.t == "id" %}selected{% endif %}>課程代碼</option>
+                <option value="name" {% if request.GET.t == "name" %}selected{% endif %}>課程名稱</option>
+                <option value="professor" {% if request.GET.t == "professor" %}selected{% endif %}>老師名字</option>
+                <option value="dept" {% if request.GET.t == "dept" %}selected{% endif %}>開課系所</option>
             </select>
         </div>
         <div class="col-12 col-md-10">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="請輸入關鍵字..." name="q">
+                <input type="text" class="form-control" placeholder="請輸入關鍵字..." name="q"
+                    value="{{ request.GET.q|default:'' }}">
                 <button type="submit" class="btn btn-primary">查詢</button>
             </div>
         </div>
@@ -53,6 +54,53 @@
 {% else %}
 <div class="alert alert-warning" role="alert">
     查無此資料，請換個關鍵字重新查詢一次
+</div>
+{% endif %}
+
+{% if is_paginated %}
+<div class="d-flex mt-3">
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}"
+                    aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
+                    {{page_obj.previous_page_number }}
+                </a>
+            </li>
+            {% endif %}
+            <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
+                    {{ page_obj.next_page_number }}
+                </a>
+            </li>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ page_obj.next_page_number }}"
+                    aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    <div class="ms-3">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </div>
 </div>
 {% endif %}
 {% endblock content %}
