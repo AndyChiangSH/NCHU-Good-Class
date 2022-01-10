@@ -42,16 +42,16 @@ class ClassListView(generic.ListView):
         # print(q)
 
         if t == None or q == None or q == "":
-            object_list = self.model.objects.all()
+            object_list = self.model.objects.all().order_by('id')
         else:
             if t == "id":
-                object_list = self.model.objects.filter(id__contains=q)
+                object_list = self.model.objects.filter(id__contains=q).order_by('id')
             elif t == "name":
-                object_list = self.model.objects.filter(cName__contains=q)
+                object_list = self.model.objects.filter(cName__contains=q).order_by('id')
             elif t == "professor":
-                object_list = self.model.objects.filter(cProfessor__contains=q)
+                object_list = self.model.objects.filter(cProfessor__contains=q).order_by('id')
             elif t == "dept":
-                object_list = self.model.objects.filter(cDept__contains=q)
+                object_list = self.model.objects.filter(cDept__contains=q).order_by('id')
             else:
                 object_list = self.model.objects.none()
 
