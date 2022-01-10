@@ -83,8 +83,7 @@
                 <ul class="navbar-nav d-flex">
                     {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link me-3" href="{% url 'profile' request.user.id %}">{{ request.user }},
-                            {{ request.user.id }}</a>
+                        <a class="nav-link me-3" href="{% url 'profile' request.user.id %}">{{ request.user }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn login-btn" href="{% url 'logout' %}?next={{ request.path }}">登出</a>
@@ -163,7 +162,7 @@
                 <a class="link-main-color" href="#" target="_blank">意見回饋</a>
             </div>
         </div>
-        <p class="text-center text-muted" style="font-size: 10px;">Copyright © 2022 NCHU-Good-Class</p>
+        <p class="text-center text-muted" style="font-size: 10px;">Copyright © 2022 NCHU Good Class</p>
     </div>
 
     <!-- Optional JavaScript; choose one of the two! -->

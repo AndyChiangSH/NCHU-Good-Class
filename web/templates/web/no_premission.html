@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %} | 沒有權限{{ request.user }}{% endblock title %}
+
+{% block style %}
+{% endblock style %}
+
+{% block content %}
+<h2>你沒有使用此頁的權限!</h2>
+<a class="btn btn-main-color" href="{% url 'index' %}">回到首頁</a>
+{% endblock content %}

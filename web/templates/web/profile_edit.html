@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %} | 修改個人資料: {{ request.user }}{% endblock title %}
+{% block title %} | 修改你的系所: {{ request.user }}{% endblock title %}
 
 {% block style %}
 {% endblock style %}
 
 {% block content %}
+<h1 class="text-main-color fw-bold mb-3">修改你的系所</h1>
+
 <form action="" method="POST">
     {% csrf_token %}
 

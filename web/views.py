@@ -9,9 +9,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.db.models import Avg
 
 
-# Create your views here.
+# 首頁
 def index(request):
     
     num_user = User.objects.all().count()
@@ -27,6 +28,7 @@ def index(request):
     return render(request, "web/index.html", context)
 
 
+# 課程清單
 class ClassListView(generic.ListView):
     model = Class
     template_name = "web/class_list.html"
@@ -56,12 +58,13 @@ class ClassListView(generic.ListView):
         return object_list
 
 
-def class_detail_view(request, pk):
-    error = "t"
+# 課程詳細內頁
+def class_detail(request, pk):
+    error = "true"
     try:
         error = request.GET["error"]
     except:
-        error = "f"
+        error = "false"
 
     try:
         class_ = Class.objects.get(pk=pk)
@@ -73,7 +76,7 @@ def class_detail_view(request, pk):
     try:
         for comment in comments:
             profile = Profile.objects.get(pUID=comment.mUID)
-            comment_list.append({"detail": comment, "dept": profile.pDept, "mUID": comment.mUID.id})
+            comment_list.append({ "detail": comment, "dept": profile.pDept })
     except Profile.DoesNotExist:
         raise Http404('Profile does not exist')
 
@@ -132,6 +135,7 @@ def log_in(request):
         user = authenticate(username=username, password=password)
         if user != None and user.is_active:
             login(request, user)
+
             return redirect(next)
         else:
             error = True
@@ -165,9 +169,12 @@ def log_out(request):
 # 個人資料頁面
 @login_required(login_url="login")
 def profile(request, pk):
+    if pk == None:
+        raise Http404('pk can not be empty.')
+
     user_id = request.user.id
-    if str(user_id) != str(pk) or pk == None:
-        return redirect("/")
+    if str(user_id) != str(pk):
+        return redirect("/web/no_premission")
     
     profile_dept = Profile.objects.get(pUID__id=user_id)
 
@@ -181,19 +188,23 @@ def profile(request, pk):
 # 修改個人資料
 @login_required(login_url="login")
 def profile_edit(request, pk):
-    user_id = request.user.id
-    if str(user_id) != str(pk) or pk == None:
-        return redirect("/")
+    if pk == None:
+        raise Http404('pk can not be empty.')
 
-    form = ProfileDeptForm()
+    user = request.user
+    if str(user.id) != str(pk):
+        return redirect("/web/no_premission")
+
+    user_obj = Profile.objects.get(pUID__id=user.id)
+    form = ProfileDeptForm(initial={'dept': user_obj.pDept})
 
     if request.method == "POST":
-        profile_dept = Profile.objects.get(pUID__id=user_id)
-        dept = request.POST["dept"]
-        dept_obj = Department.objects.get(id=dept)
-        profile_dept.pDept = dept_obj
-        profile_dept.save()
-        return redirect(f"/web/user/{user_id}")
+        form_dept = request.POST["dept"]
+        dept_obj = Department.objects.get(id=form_dept)
+        user_obj.pDept = dept_obj
+        user_obj.save()
+
+        return redirect(f"/web/user/{user.id}")
 
     context = {
         "form": form
@@ -205,9 +216,12 @@ def profile_edit(request, pk):
 # 個人評論清單
 @login_required(login_url="login")
 def profile_comment_list(request, pk):
+    if pk == None:
+        raise Http404('pk can not be empty.')
+    
     user_id = request.user.id
-    if str(user_id) != str(pk) or pk == None:
-        return redirect("/")
+    if str(user_id) != str(pk):
+        return redirect("/web/no_premission")
     
     comments = Comment.objects.filter(mUID=request.user).order_by("-mLasttime")
     print(comments)
@@ -219,7 +233,7 @@ def profile_comment_list(request, pk):
     return render(request, 'web/profile_comment_list.html', context)
 
 
-
+# 確認數字範圍(0~10)
 def check_number(num):
     if num != None:
         if int(num) >= 0 and int(num) <= 10:
@@ -227,17 +241,50 @@ def check_number(num):
 
     return False
 
+# 確認字串長度(10~1000)
 def check_string(string):
     if len(string) > 1000 or len(string) < 10:
         return False
     else:
         return True
 
+# 更新評分平均
+def update_avg(class_):
+    new_avgs = Comment.objects.filter(mCID=class_).aggregate(Avg('mCool'), Avg('mSweet'), Avg('mFun'), Avg('mLearn'), Avg('mJoin'))
+    print(new_avgs)
+
+    new_avg_cool = new_avgs['mCool__avg']
+    new_avg_sweet = new_avgs['mSweet__avg']
+    new_avg_fun = new_avgs['mFun__avg']
+    new_avg_learn = new_avgs['mLearn__avg']
+    new_avg_join = new_avgs['mJoin__avg']
+
+    if new_avg_cool == None:
+        new_avg_cool = 0
+    if new_avg_sweet == None:
+        new_avg_sweet = 0
+    if new_avg_fun == None:
+        new_avg_fun = 0
+    if new_avg_learn == None:
+        new_avg_learn = 0
+    if new_avg_join == None:
+        new_avg_join = 0
+
+    class_.cCool = new_avg_cool
+    class_.cSweet = new_avg_sweet
+    class_.cFun = new_avg_fun
+    class_.cLearn = new_avg_learn
+    class_.cJoin = new_avg_join
+
+    class_.save()
+
 
 # 新增評論
 @login_required(login_url="login")
 def comment_create(request, code):
-    print(code)
+    if code == None:
+        raise Http404('code can not be empty.')
+
     user_id = request.user.id
 
     try:
@@ -270,20 +317,22 @@ def comment_create(request, code):
                     mContent=content, 
                     mLasttime=lasttime
                 )
+
                 row.save()
+                update_avg(class_)
 
                 return redirect(f"/web/class/{code}")
 
         return render(request, 'web/comment_create.html')
     else:
-        return redirect(f"/web/class/{code}/?error=t")
+        return redirect(f"/web/class/{code}/?error=true")
 
 
 # 編輯評論
 @login_required(login_url="login")
 def comment_edit(request, pk=None):
     if pk == None:
-        return redirect("/")
+        raise Http404('pk can not be empty.')
     
     try:
         comment = Comment.objects.get(id=pk)
@@ -292,7 +341,7 @@ def comment_edit(request, pk=None):
 
     user = request.user
     if user.id != comment.mUID.id or pk == None:
-        return redirect("/")
+        return redirect("/web/no_premission")
 
     next = "/"
     if request.method == "POST":
@@ -305,13 +354,15 @@ def comment_edit(request, pk=None):
         next = request.POST["next"]
 
         if check_number(cool) and check_number(sweet) and check_number(fun) and check_number(learn) and check_number(join) and check_string(content):
-            comment.mCool=int(cool)
-            comment.mSweet=int(sweet)
-            comment.mFun=int(fun)
-            comment.mLearn=int(learn)
-            comment.mJoin=int(join)
-            comment.mContent=content
+            comment.mCool = int(cool)
+            comment.mSweet = int(sweet)
+            comment.mFun = int(fun)
+            comment.mLearn = int(learn)
+            comment.mJoin = int(join)
+            comment.mContent = content
+
             comment.save()
+            update_avg(comment.mCID)
 
             return redirect(next)
     else:
@@ -332,7 +383,7 @@ def comment_edit(request, pk=None):
 @login_required(login_url="login")
 def comment_delete(request, pk=None):
     if pk == None:
-        return redirect("/")
+        raise Http404('pk can not be empty.')
     
     try:
         comment = Comment.objects.get(id=pk)
@@ -341,11 +392,13 @@ def comment_delete(request, pk=None):
 
     user = request.user
     if user.id != comment.mUID.id or pk == None:
-        return redirect("/")
+        return redirect("/web/no_premission")
     
     if request.method == "POST":
         next = request.POST["next"]
+
         comment.delete()
+        update_avg(comment.mCID)
         
         return redirect(next)
     else:
@@ -359,3 +412,7 @@ def comment_delete(request, pk=None):
         }
 
         return render(request, 'web/comment_delete.html', context)
+
+# 沒有權限
+def no_premission(request):
+    return render(request, 'web/no_premission.html')

@@ -54,7 +54,7 @@
 </div>
 
 <div>
-    {% if error == "t" %}
+    {% if error == "true" %}
     <div class="alert alert-danger my-3" role="alert">
         你已經評論過了!
     </div>
@@ -65,7 +65,7 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <p class="card-title fw-bold mb-0">{{ comment.dept|default:"不公開" }}</p>
-                {% if comment.mUID == request.user.id %}
+                {% if comment.detail.mUID.id == request.user.id %}
                 <div>
                     <a href="{% url 'comment_edit' comment.detail.id %}?next={{ request.path }}" class="text-primary fs-4 me-1"><i class="bi bi-pencil-square"></i></a>
                     <a href="{% url 'comment_delete' comment.detail.id %}?next={{ request.path }}" class="text-danger fs-4"><i class="bi bi-trash-fill"></i></a>

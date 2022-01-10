@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} | 課程: {{ class.cName }}{% endblock title %}
+{% block title %} | 你的評論清單: {{ request.user }}{% endblock title %}
 
 {% block style %}
 <style>
@@ -11,6 +11,8 @@
 {% endblock style %}
 
 {% block content %}
+<h1 class="text-main-color fw-bold mb-3">你的評論清單</h1>
+
 <div>
     {% if comments %}
     {% for comment in comments %}

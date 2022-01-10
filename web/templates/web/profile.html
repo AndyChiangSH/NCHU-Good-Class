@@ -6,9 +6,10 @@
 {% endblock style %}
 
 {% block content %}
+<h1 class="text-main-color fw-bold mb-3">你的個人資料</h1>
 <h2>歡迎，{{ request.user }}!</h2>
 <p class="text-muted fs-5">id : {{ request.user.id }}</p>
 <p>你的系所 : {{ profile_dept.pDept }}</p>
-<a class="btn btn-main-color" href="{% url 'profile_edit' request.user.id %}">修改個人資料</a>
+<a class="btn btn-main-color" href="{% url 'profile_edit' request.user.id %}">修改你的系所</a>
 <a class="btn btn-main-color" href="{% url 'profile_comment_list' request.user.id %}">你的評論清單</a>
 {% endblock content %}
