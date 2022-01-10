@@ -10,6 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
+from dotenv import load_dotenv
+
+# load environment var
+load_dotenv()
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bdc&tx)tfzind!9u)7e$ko_fh@$@x+)40#6!)$3(=@+vx6c15+'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DJANGO_DEBUG", True))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['nchugoodclass.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -43,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -119,6 +126,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
@@ -132,3 +140,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
+
+import dj_database_url
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

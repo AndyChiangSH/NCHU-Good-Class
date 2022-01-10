@@ -1,0 +1,1 @@
+web: gunicorn nchugoodclass.wsgi --log-file -
