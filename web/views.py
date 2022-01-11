@@ -102,7 +102,8 @@ def register(request):
             if form.is_valid():
                 form.save()
                 user = User.objects.get(username=request.POST["username"])
-                Profile.objects.create(pUID=user, pDept=None)
+                dept = Department.objects.get(dDept="不公開")
+                Profile.objects.create(pUID=user, pDept=dept)
                 return redirect('/web/login')
             else:
                 error = True
