@@ -11,7 +11,36 @@
 <form action="" method="POST">
     {% csrf_token %}
 
-    <h3>評分</h3>
+    <div class="d-flex align-items-center">
+        <h3 class="fw-bold my-0 me-2">評分</h3>
+        <a type="button" data-bs-toggle="modal" data-bs-target="#score-intro">
+            <i class="bi bi-question-circle-fill"></i>
+        </a>
+    </div>
+
+    <!-- Modal start -->
+    <div class="modal fade" id="score-intro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title fw-bold">評分說明</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fw-bold">評分共有五個指標，分別是甜、涼、有趣、學習和參與，範圍從0到10，分數越高代表程度越高!</p>
+                    <ul>
+                        <li><span class="fw-bold">甜：</span>表示老師成績都給很高，通常平均總成績85以上就算是甜課了!</li>
+                        <li><span class="fw-bold">涼：</span>表示這堂課很輕鬆就可以通過，沒有太多作業或小考，但分數不一定高。</li>
+                        <li><span class="fw-bold">有趣：</span>表示老師上課很有趣、生動，不會上到想睡覺。</li>
+                        <li><span class="fw-bold">學習：</span>表示這堂課可以學到很多知識，收穫良多。</li>
+                        <li><span class="fw-bold">參與：</span>表示這堂課有很多團體活動，像是小組討論、報告等等。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal end -->
+
     <div class="form-text">請選擇0~10的數字，數字越高表示程度越高</div>
     <div class="row my-3">
         <div class="col-12 col-md-2">
@@ -36,10 +65,9 @@
         </div>
     </div>
 
-    <h3>評論</h3>
+    <h3 class="fw-bold mt-5">評論</h3>
     <div class="my-3">
-        <label for="content" class="form-label">內容</label>
-        <div class="form-text">請輸入10~100字的評論內容</div>
+        <div class="form-text">請輸入10~1000字的評論內容</div>
         <textarea class="form-control" id="content" rows="5" name="content" minlength="10" maxlength="100"
             required></textarea>
     </div>

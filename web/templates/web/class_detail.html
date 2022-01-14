@@ -19,7 +19,37 @@
 
 <hr class="my-4">
 
-<h2 class="fw-bold">評分</h2>
+<div class="d-flex align-items-center">
+<h2 class="fw-bold my-0 me-2">評分</h2>
+<a type="button" data-bs-toggle="modal" data-bs-target="#score-intro">
+  <i class="bi bi-question-circle-fill"></i>
+</a>
+</div>
+
+<!-- Modal start -->
+<div class="modal fade" id="score-intro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title fw-bold">評分說明</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="fw-bold">評分共有五個指標，分別是甜、涼、有趣、學習和參與，範圍從0到10，分數越高代表程度越高!</p>
+        <ul>
+            <li><span class="fw-bold">甜：</span>表示老師成績都給很高，通常平均總成績85以上就算是甜課了!</li>
+            <li><span class="fw-bold">涼：</span>表示這堂課很輕鬆就可以通過，沒有太多作業或小考，但分數不一定高。</li>
+            <li><span class="fw-bold">有趣：</span>表示老師上課很有趣、生動，不會上到想睡覺。</li>
+            <li><span class="fw-bold">學習：</span>表示這堂課可以學到很多知識，收穫良多。</li>
+            <li><span class="fw-bold">參與：</span>表示這堂課有很多團體活動，像是小組討論、報告等等。</li>
+        </ul>
+        <p>下方雷達圖顯示為該堂課各個指標在所有評論中的平均值，取到小數點底下一位。</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal end -->
+
 <div class="row">
     <div class="col-12 col-md-4">
         <canvas id="radarChart"></canvas>

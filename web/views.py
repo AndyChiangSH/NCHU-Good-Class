@@ -15,8 +15,8 @@ from .forms import RegisterForm, LoginForm, ProfileDeptForm
 # 首頁
 def index(request):
     num_user = User.objects.all().count()   # 使用人數
-    num_class = Class.objects.all().count() # 課程數量
-    num_comment = Comment.objects.all().count() # 評論數量
+    num_class = Class.objects.all().count()  # 課程數量
+    num_comment = Comment.objects.all().count()  # 評論數量
 
     context = {
         "num_user": num_user,
@@ -44,13 +44,17 @@ class ClassListView(generic.ListView):
             object_list = self.model.objects.all().order_by('id')
         else:
             if t == "id":   # 課程代碼查詢
-                object_list = self.model.objects.filter(id__contains=q).order_by('id')
+                object_list = self.model.objects.filter(
+                    id__contains=q).order_by('id')
             elif t == "name":   # 課程名稱查詢
-                object_list = self.model.objects.filter(cName__contains=q).order_by('id')
+                object_list = self.model.objects.filter(
+                    cName__contains=q).order_by('id')
             elif t == "professor":  # 老師名稱查詢
-                object_list = self.model.objects.filter(cProfessor__contains=q).order_by('id')
+                object_list = self.model.objects.filter(
+                    cProfessor__contains=q).order_by('id')
             elif t == "dept":   # 開課系所
-                object_list = self.model.objects.filter(cDept__contains=q).order_by('id')
+                object_list = self.model.objects.filter(
+                    cDept__contains=q).order_by('id')
             else:   # 查無資料
                 object_list = self.model.objects.none()
 
@@ -79,7 +83,7 @@ def class_detail(request, code):
         for comment in comments:
             # 每個評論的使用者
             profile = Profile.objects.get(pUID=comment.mUID)
-            comment_list.append({ "detail": comment, "dept": profile.pDept })
+            comment_list.append({"detail": comment, "dept": profile.pDept})
     except Profile.DoesNotExist:
         raise Http404('Profile does not exist')
 
@@ -119,7 +123,7 @@ def register(request):
         else:
             error = True
             error_msg = "電子信箱必須為gmail.com結尾!"
-    
+
     context = {
         'form': form,
         'error': error,
@@ -129,7 +133,7 @@ def register(request):
     return render(request, 'web/register.html', context)
 
 
-#登入
+# 登入
 def log_in(request):
     # 已經登入則重新導向到首頁
     if request.user.is_authenticated:
@@ -146,7 +150,7 @@ def log_in(request):
         next = request.POST["next"]
         # 使用者認證
         user = authenticate(username=username, password=password)
-        if user != None and user.is_active: # 認證+是否可登入
+        if user != None and user.is_active:  # 認證+是否可登入
             # 登入
             login(request, user)
 
@@ -159,7 +163,7 @@ def log_in(request):
             next = request.GET['next']
         except:
             next = "/"
-        
+
     context = {
         'form': form,
         'error': error,
@@ -195,14 +199,14 @@ def profile(request, id):
     user_id = request.user.id
     if int(user_id) != id:
         return redirect("/web/no_premission")
-    
+
     # 使用者系所
     profile_dept = Profile.objects.get(pUID__id=user_id)
 
     context = {
         "profile_dept": profile_dept
     }
-    
+
     return render(request, 'web/profile.html', context)
 
 
@@ -226,16 +230,16 @@ def profile_edit(request, id):
     if request.method == "POST":
         # 儲存使用者回傳的系所
         form_dept = request.POST["dept"]    # 回傳的系所名稱
-        dept_obj = Department.objects.get(id=form_dept) # 取得對應的系所物件
+        dept_obj = Department.objects.get(id=form_dept)  # 取得對應的系所物件
         user_obj.pDept = dept_obj   # 修改系所
-        user_obj.save() # 儲存
+        user_obj.save()  # 儲存
 
         return redirect(f"/web/profile/{user.id}")
 
     context = {
         "form": form
     }
-    
+
     return render(request, 'web/profile_edit.html', context)
 
 
@@ -245,12 +249,12 @@ def profile_comment_list(request, id):
     # id為空
     if id == None:
         raise Http404('id can not be empty.')
-    
+
     # 認證使用者是否相同
     user_id = request.user.id
     if str(user_id) != str(id):
         return redirect("/web/no_premission")
-    
+
     # 該使用者的所有評論
     comments = Comment.objects.filter(mUID=request.user).order_by("-mLasttime")
 
@@ -269,6 +273,8 @@ def check_number(num):
     return False
 
 # 確認字串長度(10~1000)
+
+
 def check_string(string):
     if len(string) > 1000 or len(string) < 10:
         return False
@@ -276,10 +282,13 @@ def check_string(string):
         return True
 
 # 更新評分平均
+
+
 def update_avg(class_):
     # 取得甜、涼、有趣、學習、參與的平均
-    new_avgs = Comment.objects.filter(mCID=class_).aggregate(Avg('mCool'), Avg('mSweet'), Avg('mFun'), Avg('mLearn'), Avg('mJoin'))
-    
+    new_avgs = Comment.objects.filter(mCID=class_).aggregate(
+        Avg('mCool'), Avg('mSweet'), Avg('mFun'), Avg('mLearn'), Avg('mJoin'))
+
     # 取得平均
     new_avg_cool = new_avgs['mCool__avg']
     new_avg_sweet = new_avgs['mSweet__avg']
@@ -326,7 +335,7 @@ def comment_create(request, code):
         user = User.objects.get(id=user_id)
     except Class.DoesNotExist:
         raise Http404('Class does not exist')
-    
+
     # 取得該堂課程和該名使用者的評論
     comments = Comment.objects.filter(mCID=class_).filter(mUID=user)
 
@@ -346,14 +355,14 @@ def comment_create(request, code):
             if check_number(cool) and check_number(sweet) and check_number(fun) and check_number(learn) and check_number(join) and check_string(content):
                 # 新增評論
                 row = Comment.objects.create(
-                    mCID=class_, 
-                    mUID=user, 
+                    mCID=class_,
+                    mUID=user,
                     mCool=int(cool),
                     mSweet=int(sweet),
-                    mFun=int(fun), 
-                    mLearn=int(learn), 
-                    mJoin=int(join), 
-                    mContent=content, 
+                    mFun=int(fun),
+                    mLearn=int(learn),
+                    mJoin=int(join),
+                    mContent=content,
                     mLasttime=lasttime
                 )
                 row.save()
@@ -373,7 +382,7 @@ def comment_edit(request, id=None):
     # id不得為空
     if id == None:
         raise Http404('id can not be empty.')
-    
+
     # 評論是否存在
     try:
         comment = Comment.objects.get(id=id)
@@ -416,7 +425,7 @@ def comment_edit(request, id=None):
             next = request.GET["next"]
         except:
             next = "/"
-        
+
     context = {
         "comment": comment.__dict__,
         "next": next,
@@ -431,7 +440,7 @@ def comment_delete(request, id=None):
     # id不得為空
     if id == None:
         raise Http404('id can not be empty.')
-    
+
     # 評論是否存在
     try:
         comment = Comment.objects.get(id=id)
@@ -442,14 +451,14 @@ def comment_delete(request, id=None):
     user = request.user
     if user.id != comment.mUID.id:
         return redirect("/web/no_premission")
-    
+
     if request.method == "POST":
         next = request.POST["next"]
         # 刪除資料
         comment.delete()
         # 更新平均
         update_avg(comment.mCID)
-        
+
         return redirect(next)
     else:
         # 取得next
