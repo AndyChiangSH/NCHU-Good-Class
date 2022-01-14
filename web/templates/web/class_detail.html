@@ -39,8 +39,9 @@
 <hr>
 
 <div class="d-flex justify-content-between flex-wrap">
-    <div>
-        <h2 class="fw-bold">評論</h2>
+    <div class="d-flex align-items-center">
+        <h2 class="fw-bold my-0 me-2">評論</h2>
+        <p class="badge bg-success text-wrap m-0">{{ comments|length }} 則評論</p>
     </div>
     {% if request.user.is_authenticated %}
     <div>
@@ -93,8 +94,6 @@
     </div>
     {% endif %}
 </div>
-
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 <script>

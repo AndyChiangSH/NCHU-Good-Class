@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
 
 
+# 系所
 class Department(models.Model):
     dDept = models.CharField("系所名稱", max_length=50, unique=True)
 
@@ -10,6 +10,7 @@ class Department(models.Model):
         return self.dDept
 
 
+# 課程
 class Class(models.Model):
     id = models.CharField("課程代碼", max_length=4, primary_key=True)
     cName = models.CharField("課程中文名稱", max_length=50)
@@ -29,6 +30,7 @@ class Class(models.Model):
         return self.cName
 
 
+# 個人資料
 class Profile(models.Model):
     pUID = models.OneToOneField(to=User, on_delete=models.CASCADE)
     pDept = models.ForeignKey(to=Department, on_delete=models.SET_NULL, null=True)
@@ -37,6 +39,7 @@ class Profile(models.Model):
         return str(self.pUID)
 
 
+# 評論
 class Comment(models.Model):
     mUID  = models.ForeignKey(to=User, on_delete=models.CASCADE)
     mCID = models.ForeignKey(to=Class, on_delete=models.CASCADE)

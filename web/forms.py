@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .views import Profile, Department
 
 
+# 註冊表單
 class RegisterForm(UserCreationForm):
     username = forms.CharField(
         label="電子郵件",
@@ -19,6 +20,7 @@ class RegisterForm(UserCreationForm):
     )
 
 
+# 登入表單
 class LoginForm(forms.Form):
     username = forms.CharField(
         label="電子郵件",
@@ -30,13 +32,10 @@ class LoginForm(forms.Form):
     )
 
 
+# 修改個人系所表單
 class ProfileDeptForm(forms.Form):
     dept = forms.ModelChoiceField(
         label="你的系所",
         widget=forms.Select(attrs={'class': 'form-control'}),
         queryset=Department.objects.all().order_by("dDept"),
     )
-
-
-class CommentCreateForm(forms.Form):
-    content = forms.CharField()

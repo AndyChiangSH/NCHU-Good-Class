@@ -140,6 +140,7 @@ IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
 
+# Heroku資料庫
 import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=500)

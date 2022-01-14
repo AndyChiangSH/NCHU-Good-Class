@@ -20,5 +20,5 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('web/', include('web.urls')),
-    path('', RedirectView.as_view(url='/web/'))
+    path('', RedirectView.as_view(url='/web/')) # 重新導向到首頁
 ]
