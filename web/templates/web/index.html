@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %} | 首頁{% endblock title %}
 
@@ -8,6 +9,16 @@
         border: 5px solid #5a5a5a;
         border-radius: 5px;
     }
+
+    .main-logo {
+        width: 250px;
+    }
+
+    @media screen and (max-width: 540px) {
+        .main-logo {
+            width: 80%;
+        }
+    }
 </style>
 {% endblock style %}
 
@@ -15,6 +26,7 @@
 <div class="text-center">
     <h1 class="display-2 fw-bold text-main-color">中興好課</h1>
     <h2 class="display-3 fw-bold text-main-color">NCHU Good Class</h2>
+    <img class="main-logo my-3" src="{% static 'img/logo_green.png' %}" alt="綠色LOGO">
 
     <hr class="my-5">
 

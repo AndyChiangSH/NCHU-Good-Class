@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name="index"),    # 首頁
-    path('classes/', views.ClassListView.as_view(), name="class_list"), # 課程清單
+    path('class/', views.ClassListView.as_view(), name="class_list"), # 課程清單
     path('class/<str:code>/', views.class_detail, name='class_detail'),   # 課程詳細頁面
     path('register/', views.register, name="register"), # 註冊
     path('login/', views.log_in, name="login"),     # 登入
