@@ -82,10 +82,23 @@ WSGI_APPLICATION = 'nchugoodclass.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# SQLite
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# PostgerSQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',  #PostgreSQL
+        'NAME': 'nchugoodclass',  #資料庫名稱
+        'USER': 'postgres',  #資料庫帳號
+        'PASSWORD': os.environ.get("PG_PASSWORD", ""),  #資料庫密碼
+        'HOST': 'localhost',  #Server(伺服器)位址
+        'PORT': '5432'  #PostgreSQL Port號
     }
 }
 
