@@ -1,14 +1,13 @@
+from importlib.metadata import requires
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.views import generic
 from django.http.response import Http404
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Avg
-from .models import Department, Class, Profile, Comment
+from .models import Department, Class, Profile, Comment, Follow
 from .forms import RegisterForm, LoginForm, ProfileDeptForm
 from django.core.paginator import Paginator
 
@@ -62,8 +61,19 @@ def class_list(request):
     except:
         classes = paginator.get_page(1) # 失敗則返回第一頁
     
+    # 組合成課程+追蹤紀錄的列表
+    class_list = list()
+    for class_ in classes:
+        # 取得該名使用者是否追蹤這堂課
+        follow = Follow.objects.filter(fUID=request.user).filter(fCID=class_)
+        if len(follow) == 0:    # 沒追蹤
+            class_list.append({"class": class_, "followed": False})
+        else:   # 有追蹤
+            class_list.append({"class": class_, "followed": True})
+
     context = {
-        'classes': classes
+        'class_list': class_list,
+        'classes': classes, # 還是有傳classes是為了要分頁
     }
 
     return render(request, 'web/class_list.html', context)
@@ -72,7 +82,7 @@ def class_list(request):
 # 課程詳細內頁
 def class_detail(request, code):
     # 顯示錯誤訊息
-    error = "true"
+    error = "false"
     try:
         error = request.GET["error"]
     except:
@@ -80,12 +90,20 @@ def class_detail(request, code):
 
     # 取得課程詳細資料
     try:
-        class_ = Class.objects.get(pk=code)
+        class_obj = Class.objects.get(pk=code)
     except Class.DoesNotExist:
         raise Http404('Class does not exist')
+    
+    # 取得該名使用者是否追蹤這堂課
+    follow = Follow.objects.filter(fUID=request.user).filter(fCID=class_obj)
+    followed = False
+    if len(follow) == 0:    # 沒追蹤
+        followed = False
+    else:   # 有追蹤
+        followed = True
 
     # 這堂課的所有評論
-    comment_list = []
+    comment_list = list()
     comments = Comment.objects.filter(mCID__pk=code).order_by("-mLasttime")
     try:
         for comment in comments:
@@ -96,9 +114,10 @@ def class_detail(request, code):
         raise Http404('Profile does not exist')
 
     context = {
-        "class": class_,
+        "class": class_obj,
         "comments": comment_list,
         "error": error,
+        "followed": followed,
     }
 
     return render(request, "web/class_detail.html", context)
@@ -259,18 +278,40 @@ def profile_comment_list(request, id):
         raise Http404('id can not be empty.')
 
     # 認證使用者是否相同
-    user_id = request.user.id
-    if str(user_id) != str(id):
+    user = request.user
+    if str(user.id) != str(id):
         return redirect("/web/no_premission")
 
-    # 該使用者的所有評論
-    comments = Comment.objects.filter(mUID=request.user).order_by("-mLasttime")
+    # 該使用者的所有評論(新的排在前面)
+    comments = Comment.objects.filter(mUID=user).order_by("-mLasttime")
 
     context = {
         "comments": comments,
     }
 
     return render(request, 'web/profile_comment_list.html', context)
+
+
+# 個人追蹤清單
+@login_required(login_url="login")
+def profile_follow_list(request, id):
+    # id為空
+    if id == None:
+        raise Http404('id can not be empty.')
+
+    # 認證使用者是否相同
+    user = request.user
+    if str(user.id) != str(id):
+        return redirect("/web/no_premission")
+
+    # 該使用者的所有追蹤(新的排在前面)
+    follows = Follow.objects.filter(fUID=user).order_by("-fLasttime")
+
+    context = {
+        "follows": follows,
+    }
+
+    return render(request, 'web/profile_follow_list.html', context)
 
 
 # 確認數字範圍(0~10)
@@ -281,17 +322,14 @@ def check_number(num):
     return False
 
 # 確認字串長度(10~1000)
-
-
 def check_string(string):
     if len(string) > 1000 or len(string) < 10:
         return False
     else:
         return True
 
+
 # 更新評分平均
-
-
 def update_avg(class_):
     # 取得甜、涼、有趣、學習、參與的平均
     new_avgs = Comment.objects.filter(mCID=class_).aggregate(
@@ -485,3 +523,36 @@ def comment_delete(request, id=None):
 # 沒有權限
 def no_premission(request):
     return render(request, 'web/no_premission.html')
+
+
+# 追蹤(星號)
+@login_required(login_url="login")
+def follow(request, id=None):
+    if request.method == "POST":
+        user = request.user     # 當前使用者
+        next = "/"
+        if request.POST["next"] != None:
+            next = request.POST["next"]     # 原本的位置
+
+        if id == None or id == "":  # id為空
+            raise Http404('Class can not be empty.')
+        else:
+            try:
+                class_obj = Class.objects.get(id=id)    # 取得該堂課程
+            except:
+                raise Http404('Class does not exist.')
+
+            # 取得追蹤紀錄
+            follow = Follow.objects.filter(fUID=user).filter(fCID=class_obj)
+            if len(follow) == 0:    # 沒追蹤則新增
+                new_follow = Follow.objects.create(
+                    fUID=user,
+                    fCID=class_obj,
+                )
+                new_follow.save()
+            else:   # 有追蹤則刪除
+                follow.delete()
+
+            return redirect(next)   # 返回原本的位置
+    else:
+        raise Http404('GET method not allow.')

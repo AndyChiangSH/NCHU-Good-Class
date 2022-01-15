@@ -25,6 +25,7 @@ class Class(models.Model):
     cFun = models.DecimalField("有趣", max_digits=3, decimal_places=1, default=0)
     cLearn = models.DecimalField("學習", max_digits=3, decimal_places=1, default=0)
     cJoin = models.DecimalField("參與", max_digits=3, decimal_places=1, default=0)
+    cFollow = models.IntegerField("追蹤數", default=0)
 
     def __str__(self):
         return self.cName
@@ -41,7 +42,7 @@ class Profile(models.Model):
 
 # 評論
 class Comment(models.Model):
-    mUID  = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    mUID = models.ForeignKey(to=User, on_delete=models.CASCADE)
     mCID = models.ForeignKey(to=Class, on_delete=models.CASCADE)
     mContent = models.TextField("評論內容", max_length=1000)
     mCool = models.DecimalField("涼", max_digits=2, decimal_places=0, default=0)
@@ -56,3 +57,16 @@ class Comment(models.Model):
 
     class Meta:
         unique_together = (("mUID", "mCID"),)
+
+
+# 追蹤(星號)
+class Follow(models.Model):
+    fUID = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    fCID = models.ForeignKey(to=Class, on_delete=models.CASCADE)
+    fLasttime = models.DateTimeField("最後追蹤時間", auto_now=True)
+
+    def __str__(self):
+        return f"{self.fUID}, {self.fCID}"
+
+    class Meta:
+        unique_together = (("fUID", "fCID"),)

@@ -35,17 +35,32 @@
 
 {% if classes %}
 <div class="row">
-    {% for class in classes %}
-    <a href="{% url 'class_detail' class.id %}" class="col-12 col-sm-6 col-md-4 col-lg-3 text-decoration-none">
+    {% for class in class_list %}
+    <a href="{% url 'class_detail' class.class.id %}" class="col-12 col-sm-6 col-md-4 col-lg-3 text-decoration-none">
         <div class="card m-2">
             <div class="card-body">
-                <span class="card-text text-danger fw-bold">{{ class.id }}</span>
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="card-text text-danger fw-bold mb-0">{{ class.class.id }}</p>
+                    <div>
+                        <form action="{% url 'follow' class.class.id %}" method="POST">
+                            {% csrf_token %}
+
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                            <button type="submit" class="text-warning" style="background: none; border: none; padding: 0;">
+                                {% if class.followed %}
+                                <i class="bi bi-star-fill"></i>
+                                {% else %}
+                                <i class="bi bi-star"></i>
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <span class="card-title text-dark fw-bold fs-3">{{ class.class.cName }}</span>
                 <br>
-                <span class="card-title text-dark fw-bold fs-3">{{ class.cName }}</span>
+                <span class="card-text text-secondary">{{ class.class.cType }} | {{ class.class.cDept }}</span>
                 <br>
-                <span class="card-text text-secondary">{{ class.cType }} | {{ class.cDept }}</span>
-                <br>
-                <span class="card-text text-secondary">{{ class.cProfessor }}</span>
+                <span class="card-text text-secondary">{{ class.class.cProfessor }}</span>
             </div>
         </div>
     </a>
@@ -58,7 +73,7 @@
 {% endif %}
 
 {% if classes.paginator.num_pages > 1 %}
-<div class="d-flex mt-3 justify-content-center">
+<div class="d-flex mt-3 justify-content-center flex-wrap">
     <nav>
         <ul class="pagination">
             {% if classes.has_previous %}

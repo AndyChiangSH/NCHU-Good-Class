@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Department, Class, Profile, Comment
+from .models import Department, Class, Profile, Comment, Follow
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -60,3 +60,16 @@ class CommentAdmin(ImportExportModelAdmin):
     ordering = ('-mLasttime', 'id')
 
 admin.site.register(Comment, CommentAdmin)
+
+
+class FollowResource(resources.ModelResource):
+    class Meta:
+        model = Follow
+
+class FollowAdmin(ImportExportModelAdmin):
+    resource_class = FollowResource
+    list_display = ('id', 'fUID', 'fCID')
+    search_fields = ('id', 'fUID', 'fCID')
+    ordering = ('id', )
+
+admin.site.register(Follow, FollowAdmin)

@@ -11,7 +11,23 @@
 {% endblock style %}
 
 {% block content %}
-<p class="text-danger fw-bold fs-3">{{ class.id }}</p>
+<div class="d-flex justify-content-between">
+    <p class="text-danger fw-bold fs-3">{{ class.id }}</p>
+    <div>
+        <form action="{% url 'follow' class.id %}" method="POST">
+            {% csrf_token %}
+
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="text-warning fs-3" style="background: none; border: none; padding: 0;">
+                {% if followed %}
+                <i class="bi bi-star-fill"></i>
+                {% else %}
+                <i class="bi bi-star"></i>
+                {% endif %}
+            </button>
+        </form>
+    </div>
+</div>
 <h1 class="fw-bold">{{ class.cName }}</h1>
 <h2>{{ class.cEn_name }}</h2>
 <p class="h3 mt-3">{{ class.cProfessor }}</p>
