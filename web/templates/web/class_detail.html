@@ -11,9 +11,10 @@
 {% endblock style %}
 
 {% block content %}
-<div class="d-flex justify-content-between">
-    <p class="text-danger fw-bold fs-3">{{ class.id }}</p>
-    <div>
+<div class="d-flex justify-content-between mb-2">
+    <span class="text-danger fw-bold fs-3">{{ class.id }}</span>
+    <div class="d-flex align-items-center">
+        <span class="text-warning me-2">{{ class.cFollow }}</span>
         <form action="{% url 'follow' class.id %}" method="POST">
             {% csrf_token %}
 
@@ -82,7 +83,7 @@
     </div>
 </div>
 
-<hr>
+<hr class="my-4">
 
 <div class="d-flex justify-content-between flex-wrap">
     <div class="d-flex align-items-center">

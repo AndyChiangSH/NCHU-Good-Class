@@ -29,6 +29,7 @@ def index(request):
 
 # 課程清單
 def class_list(request):
+    user = request.user
     # GET參數
     t = request.GET.get('t')
     q = request.GET.get('q')
@@ -64,12 +65,15 @@ def class_list(request):
     # 組合成課程+追蹤紀錄的列表
     class_list = list()
     for class_ in classes:
+        if user.is_authenticated:
         # 取得該名使用者是否追蹤這堂課
-        follow = Follow.objects.filter(fUID=request.user).filter(fCID=class_)
-        if len(follow) == 0:    # 沒追蹤
+            follow = Follow.objects.filter(fUID=user).filter(fCID=class_)
+            if len(follow) == 0:    # 沒追蹤
+                class_list.append({"class": class_, "followed": False})
+            else:   # 有追蹤
+                class_list.append({"class": class_, "followed": True})
+        else:
             class_list.append({"class": class_, "followed": False})
-        else:   # 有追蹤
-            class_list.append({"class": class_, "followed": True})
 
     context = {
         'class_list': class_list,
@@ -81,6 +85,7 @@ def class_list(request):
 
 # 課程詳細內頁
 def class_detail(request, code):
+    user = request.user
     # 顯示錯誤訊息
     error = "false"
     try:
@@ -95,12 +100,13 @@ def class_detail(request, code):
         raise Http404('Class does not exist')
     
     # 取得該名使用者是否追蹤這堂課
-    follow = Follow.objects.filter(fUID=request.user).filter(fCID=class_obj)
     followed = False
-    if len(follow) == 0:    # 沒追蹤
-        followed = False
-    else:   # 有追蹤
-        followed = True
+    if user.is_authenticated:
+        follow = Follow.objects.filter(fUID=user).filter(fCID=class_obj)
+        if len(follow) == 0:    # 沒追蹤
+            followed = False
+        else:   # 有追蹤
+            followed = True
 
     # 這堂課的所有評論
     comment_list = list()
@@ -550,9 +556,15 @@ def follow(request, id=None):
                     fCID=class_obj,
                 )
                 new_follow.save()
+                # 追蹤數+1
+                class_obj.cFollow += 1
+                class_obj.save()
             else:   # 有追蹤則刪除
                 follow.delete()
+                # 追蹤數-1
+                class_obj.cFollow -= 1
+                class_obj.save()
 
             return redirect(next)   # 返回原本的位置
     else:
-        raise Http404('GET method not allow.')
+        return redirect(f"/web/class/")
