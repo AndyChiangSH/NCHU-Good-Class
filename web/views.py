@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.db.models import Avg
 from .models import Department, Class, Profile, Comment
 from .forms import RegisterForm, LoginForm, ProfileDeptForm
+from django.core.paginator import Paginator
 
 
 # 首頁
@@ -28,38 +29,45 @@ def index(request):
 
 
 # 課程清單
-class ClassListView(generic.ListView):
-    model = Class
-    template_name = "web/class_list.html"
-    paginate_by = 20    # 20個評論一個分頁
-    order_dy = ('id')
+def class_list(request):
+    # GET參數
+    t = request.GET.get('t')
+    q = request.GET.get('q')
 
-    # 查詢條件
-    def get_queryset(self):
-        # GET參數
-        t = self.request.GET.get('t')
-        q = self.request.GET.get('q')
+    if t == None or q == None or t == "" or q == "":   # 空白查詢
+        classes = Class.objects.all().order_by('id')
+    else:
+        if t == "id":   # 課程代碼查詢
+            classes = Class.objects.filter(
+                id__contains=q).order_by('id')
+        elif t == "name":   # 課程名稱查詢
+            classes = Class.objects.filter(
+                cName__contains=q).order_by('id')
+        elif t == "professor":  # 老師名稱查詢
+            classes = Class.objects.filter(
+                cProfessor__contains=q).order_by('id')
+        elif t == "dept":   # 開課系所查詢
+            classes = Class.objects.filter(
+                cDept__contains=q).order_by('id')
+        else:   # 未知查詢
+            classes = Class.objects.none()
 
-        if t == None or q == None or q == "":   # 空白查詢
-            object_list = self.model.objects.all().order_by('id')
-        else:
-            if t == "id":   # 課程代碼查詢
-                object_list = self.model.objects.filter(
-                    id__contains=q).order_by('id')
-            elif t == "name":   # 課程名稱查詢
-                object_list = self.model.objects.filter(
-                    cName__contains=q).order_by('id')
-            elif t == "professor":  # 老師名稱查詢
-                object_list = self.model.objects.filter(
-                    cProfessor__contains=q).order_by('id')
-            elif t == "dept":   # 開課系所
-                object_list = self.model.objects.filter(
-                    cDept__contains=q).order_by('id')
-            else:   # 查無資料
-                object_list = self.model.objects.none()
+    # 每20堂課分成一頁
+    paginator = Paginator(classes, 20)
 
-        return object_list
+    try:
+        # 顯示當前頁數(page)
+        page_number = request.GET.get('page')
+        classes = paginator.get_page(page_number)
+    except:
+        classes = paginator.get_page(1) # 失敗則返回第一頁
+    
+    context = {
+        'classes': classes
+    }
 
+    return render(request, 'web/class_list.html', context)
+    
 
 # 課程詳細內頁
 def class_detail(request, code):

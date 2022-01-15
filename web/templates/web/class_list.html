@@ -33,9 +33,9 @@
     </div>
 </form>
 
-{% if class_list %}
+{% if classes %}
 <div class="row">
-    {% for class in class_list %}
+    {% for class in classes %}
     <a href="{% url 'class_detail' class.id %}" class="col-12 col-sm-6 col-md-4 col-lg-3 text-decoration-none">
         <div class="card m-2">
             <div class="card-body">
@@ -57,40 +57,40 @@
 </div>
 {% endif %}
 
-{% if is_paginated %}
+{% if classes.paginator.num_pages > 1 %}
 <div class="d-flex mt-3 justify-content-center">
     <nav>
         <ul class="pagination">
-            {% if page_obj.has_previous %}
+            {% if classes.has_previous %}
             <li class="page-item">
                 <a class="page-link"
-                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}"
+                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ classes.previous_page_number }}"
                     aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
             {% endif %}
-            {% if page_obj.has_previous %}
+            {% if classes.has_previous %}
             <li class="page-item">
                 <a class="page-link"
-                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
-                    {{page_obj.previous_page_number }}
+                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ classes.previous_page_number }}">
+                    {{classes.previous_page_number }}
                 </a>
             </li>
             {% endif %}
-            <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
-            {% if page_obj.has_next %}
+            <li class="page-item active"><a class="page-link" href="#">{{ classes.number }}</a></li>
+            {% if classes.has_next %}
             <li class="page-item">
                 <a class="page-link"
-                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
-                    {{ page_obj.next_page_number }}
+                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ classes.next_page_number }}">
+                    {{ classes.next_page_number }}
                 </a>
             </li>
             {% endif %}
-            {% if page_obj.has_next %}
+            {% if classes.has_next %}
             <li class="page-item">
                 <a class="page-link"
-                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ page_obj.next_page_number }}"
+                    href="{{ request.path }}?t={{ request.GET.t }}&q={{ request.GET.q }}&page={{ classes.next_page_number }}"
                     aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
@@ -99,7 +99,12 @@
         </ul>
     </nav>
     <div class="ms-3">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        <form action="" method="GET">
+            <input type="hidden" name="t" value="{{ request.GET.t }}">
+            <input type="hidden" name="q" value="{{ request.GET.q }}">
+            Page <input type="number" name="page" style="width: 60px;" min="1" max="{{ classes.paginator.num_pages }}" value="{{ classes.number }}"> of {{ classes.paginator.num_pages }}
+            <input class="btn btn-outline-primary btn-sm" type="submit" value="GO">
+        </form>
     </div>
 </div>
 {% endif %}
