@@ -567,4 +567,4 @@ def follow(request, id=None):
 
             return redirect(next)   # 返回原本的位置
     else:
-        return redirect(f"/web/class/")
+        return redirect(f"/web/class/{id}") # 返回該堂課程

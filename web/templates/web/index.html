@@ -8,6 +8,7 @@
     .counter {
         border: 5px solid #5a5a5a;
         border-radius: 5px;
+        width: 200px;
     }
 
     .main-logo {
@@ -15,8 +16,12 @@
     }
 
     @media screen and (max-width: 540px) {
-        .main-logo {
+        .counter {
             width: 80%;
+        }
+
+        .main-logo {
+            width: 70%;
         }
     }
 </style>
@@ -46,18 +51,18 @@
     <hr class="my-5">
 
     <h3 class="display-5 my-5 fw-bold">統計數字</h3>
-    <div class="row justify-content-center">
-        <div class="counter col-10 col-md-2 m-3 p-3">
+    <div class="d-flex flex-wrap justify-content-center">
+        <div class="counter mx-4 my-2 p-3">
             <p class="h3">使用人數</p>
             <hr>
             <p class="h3 fw-bold">{{ num_user }}</p>
         </div>
-        <div class="counter col-10 col-md-2 m-3 p-3">
+        <div class="counter mx-4 my-2 p-3">
             <p class="h3">課程數量</p>
             <hr>
             <p class="h3 fw-bold">{{ num_class }}</p>
         </div>
-        <div class="counter col-10 col-md-2 m-3 p-3">
+        <div class="counter mx-4 my-2 p-3">
             <p class="h3">評論數量</p>
             <hr>
             <p class="h3 fw-bold">{{ num_comment }}</p>
