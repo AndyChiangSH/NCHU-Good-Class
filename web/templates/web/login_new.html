@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %} | 新使用者{% endblock title %}
+
+{% block style %}
+<style>
+</style>
+{% endblock style %}
+
+{% block content %}
+<h1 class="fw-bold">{{ user.get_full_name }}，歡迎使用中興好課!</h1>
+<p>首次登入請先設定你的系所(預設為不公開)</p>
+<a class="btn btn-main-color my-1" href="{% url 'profile_edit' %}">修改你的系所</a>
+{% endblock content %}

@@ -7,9 +7,10 @@
 
 {% block content %}
 <h1 class="text-main-color fw-bold mb-3">你的個人資料</h1>
-<h2>歡迎，{{ request.user }}!</h2>
-<p class="text-muted fs-5">id : {{ request.user.id }}</p>
-<p>你的系所 : {{ profile_dept.pDept|default:"不公開" }}</p>
+<h2>歡迎，{{ user.get_full_name }}!</h2>
+<p class="text-muted fs-5">id : {{ user.id }}</p>
+<p>Email：{{ user.email }}</p>
+<p>你的系所：{{ profile_dept.pDept|default:"不公開" }}</p>
 <a class="btn btn-main-color my-1" href="{% url 'profile_edit' %}">修改你的系所</a>
 <br>
 <a class="btn btn-main-color my-1" href="{% url 'profile_comment_list' %}">你的評論清單</a>

@@ -18,4 +18,6 @@ urlpatterns = [
     path('comment/delete/<int:id>', views.comment_delete, name="comment_delete"),   # 刪除評論
     path('no_premission/', views.no_premission, name="no_premission"),   # 沒有權限
     path('follow/<str:id>', views.follow, name="follow"),    # 追蹤
+    path('login_new/', views.login_new, name="login_new"),
+    path('login_error/', views.login_error, name="login_error"),
 ]

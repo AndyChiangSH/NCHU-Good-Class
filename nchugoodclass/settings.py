@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'web'
+    'social_django',
+    'web',
 ]
 
 MIDDLEWARE = [
@@ -165,3 +166,18 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Age of session (1 week)
 SESSION_COOKIE_AGE = 604800
+
+# Python social auth
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2', # Google login
+    'django.contrib.auth.backends.ModelBackend',    # username+password login
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GOOGLE_OAUTH2_KEY", "")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GOOGLE_OAUTH2_SECRET", "")
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/web/'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/web/login_error/'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/web/login_new/'

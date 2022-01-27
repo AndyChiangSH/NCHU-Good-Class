@@ -26,4 +26,13 @@
     <input type="hidden" name="next" value="{{ next }}" />
 </form>
 <p>還沒有帳號嗎? <a class="link-main-color" href="{% url 'register' %}">請點擊這邊註冊</a></p>
+
+<hr class="my-5">
+
+<p>或者透過以下方式</p>
+<div class="row justify-content-center">
+    <a class="btn btn-danger col-6" href="{% url 'social:begin' 'google-oauth2' %}?next={{ next }}">
+        <i class="bi bi-google me-2"></i>使用Google帳號登入
+    </a>
+</div>
 {% endblock content %}

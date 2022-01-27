@@ -548,3 +548,28 @@ def follow(request, id=None):
             return redirect(next)   # 返回原本的位置
     else:
         return redirect(f"/web/class/{id}") # 返回該堂課程
+
+
+# 第一次登入
+@login_required(login_url="login")
+def login_new(request):
+    user = request.user
+
+    try:    # 有profile
+        profile = Profile.objects.get(pUID=user)
+
+        return redirect('/')
+    except: # 沒有profile
+        # 新增profile
+        dept = Department.objects.get(dDept="不公開")
+        Profile.objects.create(pUID=user, pDept=dept)
+    
+        return render(request, 'web/login_new.html')
+
+
+# 登入錯誤
+def login_error(request):
+    if request.user.is_authenticated:   # 已經登入則重新導向首頁
+        return redirect('/')
+    else:   # 否則顯示錯誤頁面
+        return render(request, 'web/login_error.html')
