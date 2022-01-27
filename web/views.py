@@ -84,7 +84,7 @@ def class_list(request):
     
 
 # 課程詳細內頁
-def class_detail(request, code):
+def class_detail(request, id):
     user = request.user
     # 顯示錯誤訊息
     error = "false"
@@ -95,7 +95,7 @@ def class_detail(request, code):
 
     # 取得課程詳細資料
     try:
-        class_obj = Class.objects.get(pk=code)
+        class_obj = Class.objects.get(pk=id)
     except Class.DoesNotExist:
         raise Http404('Class does not exist')
     
@@ -110,7 +110,7 @@ def class_detail(request, code):
 
     # 這堂課的所有評論
     comment_list = list()
-    comments = Comment.objects.filter(mCID__pk=code).order_by("-mLasttime")
+    comments = Comment.objects.filter(mCID__pk=id).order_by("-mLasttime")
     try:
         for comment in comments:
             # 每個評論的使用者
@@ -223,18 +223,12 @@ def log_out(request):
 
 # 個人資料頁面
 @login_required(login_url="login")
-def profile(request, id):
-    # id為空
-    if id == None:
-        raise Http404('id can not be empty.')
-
-    # 認證使用者是否相同
-    user_id = request.user.id
-    if int(user_id) != id:
-        return redirect("/web/no_premission")
+def profile(request):
+    # 當前使用者
+    user = request.user
 
     # 使用者系所
-    profile_dept = Profile.objects.get(pUID__id=user_id)
+    profile_dept = Profile.objects.get(pUID__id=user.id)
 
     context = {
         "profile_dept": profile_dept
@@ -245,15 +239,9 @@ def profile(request, id):
 
 # 修改個人資料
 @login_required(login_url="login")
-def profile_edit(request, id):
-    # id為空
-    if id == None:
-        raise Http404('id can not be empty.')
-
-    # 認證使用者是否相同
+def profile_edit(request):
+    # 當前使用者
     user = request.user
-    if int(user.id) != id:
-        return redirect("/web/no_premission")
 
     # 使用者系所
     user_obj = Profile.objects.get(pUID__id=user.id)
@@ -267,26 +255,20 @@ def profile_edit(request, id):
         user_obj.pDept = dept_obj   # 修改系所
         user_obj.save()  # 儲存
 
-        return redirect(f"/web/profile/{user.id}")
+        return redirect(f"/web/profile/")
+    else:
+        context = {
+            "form": form
+        }
 
-    context = {
-        "form": form
-    }
-
-    return render(request, 'web/profile_edit.html', context)
+        return render(request, 'web/profile_edit.html', context)
 
 
 # 個人評論清單
 @login_required(login_url="login")
-def profile_comment_list(request, id):
-    # id為空
-    if id == None:
-        raise Http404('id can not be empty.')
-
-    # 認證使用者是否相同
+def profile_comment_list(request):
+    # 當前使用者
     user = request.user
-    if str(user.id) != str(id):
-        return redirect("/web/no_premission")
 
     # 該使用者的所有評論(新的排在前面)
     comments = Comment.objects.filter(mUID=user).order_by("-mLasttime")
@@ -300,15 +282,9 @@ def profile_comment_list(request, id):
 
 # 個人追蹤清單
 @login_required(login_url="login")
-def profile_follow_list(request, id):
-    # id為空
-    if id == None:
-        raise Http404('id can not be empty.')
-
-    # 認證使用者是否相同
+def profile_follow_list(request):
+    # 當前使用者
     user = request.user
-    if str(user.id) != str(id):
-        return redirect("/web/no_premission")
 
     # 該使用者的所有追蹤(新的排在前面)
     follows = Follow.objects.filter(fUID=user).order_by("-fLasttime")
@@ -373,20 +349,25 @@ def update_avg(class_):
 
 # 新增評論
 @login_required(login_url="login")
-def comment_create(request, code):
-    # code不得為空
-    if code == None:
-        raise Http404('code can not be empty.')
+def comment_create(request, id):
+    # id不得為空
+    if id == None:
+        raise Http404('id can not be empty.')
 
     # 使用者ID
     user_id = request.user.id
 
-    # 取得該堂課程和該名使用者
+    # 取得該堂課程和
     try:
-        class_ = Class.objects.get(id=code)
-        user = User.objects.get(id=user_id)
+        class_ = Class.objects.get(id=id)
     except Class.DoesNotExist:
         raise Http404('Class does not exist')
+
+    # 取得該名使用者
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        raise Http404('User does not exist')
 
     # 取得該堂課程和該名使用者的評論
     comments = Comment.objects.filter(mCID=class_).filter(mUID=user)
@@ -406,7 +387,7 @@ def comment_create(request, code):
             # 驗證評分和評論是否合法
             if check_number(cool) and check_number(sweet) and check_number(fun) and check_number(learn) and check_number(join) and check_string(content):
                 # 新增評論
-                row = Comment.objects.create(
+                Comment.objects.create(
                     mCID=class_,
                     mUID=user,
                     mCool=int(cool),
@@ -417,15 +398,14 @@ def comment_create(request, code):
                     mContent=content,
                     mLasttime=lasttime
                 )
-                row.save()
                 # 更新平均
                 update_avg(class_)
 
-                return redirect(f"/web/class/{code}")
+                return redirect(f"/web/class/{id}")
 
         return render(request, 'web/comment_create.html')
     else:
-        return redirect(f"/web/class/{code}/?error=true")
+        return redirect(f"/web/class/{id}/?error=true")
 
 
 # 編輯評論
@@ -545,7 +525,7 @@ def follow(request, id=None):
         else:
             try:
                 class_obj = Class.objects.get(id=id)    # 取得該堂課程
-            except:
+            except Class.DoesNotExist:
                 raise Http404('Class does not exist.')
 
             # 取得追蹤紀錄
