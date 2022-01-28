@@ -112,7 +112,7 @@
                 <ul class="navbar-nav d-flex">
                     {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link me-3" href="{% url 'profile' %}">{{ user.get_full_name }}</a>
+                        <a class="nav-link me-3" href="{% url 'profile' %}">{{ user.get_full_name|default:"個人資料" }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn login-btn" href="{% url 'logout' %}?next={{ request.path }}">登出</a>
@@ -136,14 +136,16 @@
         <hr class="my-3">
         <div class="d-flex flex-wrap justify-content-center">
             <div class="m-3 text-center">
-                <a class="link-main-color" href="mailto:nchugoodclass@gmail.com">Gmail</a>
+                <a class="link-main-color" href="mailto:nchugoodclass@gmail.com">Gmail<i
+                        class="bi bi-box-arrow-up-right ms-1"></i></a>
             </div>
             <div class="m-3 text-center">
                 <a class="link-main-color" href="https://github.com/AndyChiangSH/NCHU-Good-Class"
-                    target="_blank">GitHub</a>
+                    target="_blank">GitHub<i class="bi bi-box-arrow-up-right ms-1"></i></a>
             </div>
             <div class="m-3 text-center">
-                <a class="link-main-color" href="#" target="_blank">意見回饋</a>
+                <a class="link-main-color" href="#" target="_blank">意見回饋<i
+                        class="bi bi-box-arrow-up-right ms-1"></i></a>
             </div>
         </div>
         <p class="text-center text-muted" style="font-size: 10px;">Copyright © 2022 NCHU Good Class</p>

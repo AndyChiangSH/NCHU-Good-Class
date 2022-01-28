@@ -29,10 +29,13 @@
 
 <hr class="my-5">
 
-<p>或者透過以下方式</p>
 <div class="row justify-content-center">
-    <a class="btn btn-danger col-6" href="{% url 'social:begin' 'google-oauth2' %}?next={{ next }}">
+    <a class="btn btn-danger col-10 col-sm-6" href="{% url 'social:begin' 'google-oauth2' %}?next={{ next }}">
         <i class="bi bi-google me-2"></i>使用Google帳號登入
     </a>
 </div>
+<p class="text-center mt-3 text-muted">
+    <small>登入即表示您同意我們的<a class="link-main-color" href="{% url 'privacy' %}" target="_blank">隱私權條款</a>與<a
+            class="link-main-color" href="{% url 'terms' %}" target="_blank">服務條款</a></small>
+</p>
 {% endblock content %}

@@ -17,7 +17,9 @@ urlpatterns = [
     path('comment/edit/<int:id>', views.comment_edit, name="comment_edit"),     # 編輯評論
     path('comment/delete/<int:id>', views.comment_delete, name="comment_delete"),   # 刪除評論
     path('no_premission/', views.no_premission, name="no_premission"),   # 沒有權限
-    path('follow/<str:id>', views.follow, name="follow"),    # 追蹤
-    path('login_new/', views.login_new, name="login_new"),
-    path('login_error/', views.login_error, name="login_error"),
+    path('follow/<str:id>', views.follow, name="follow"),   # 追蹤
+    path('login_new/', views.login_new, name="login_new"),  # 首次登入
+    path('login_error/', views.login_error, name="login_error"),    # 登入失敗
+    path('privacy/', views.privacy, name="privacy"),   # 隱私權政策
+    path('terms/', views.terms, name="terms"),   # 服務條款
 ]

@@ -558,7 +558,7 @@ def login_new(request):
     try:    # 有profile
         profile = Profile.objects.get(pUID=user)
 
-        return redirect('/')
+        return redirect('/web/profile/edit')
     except: # 沒有profile
         # 新增profile
         dept = Department.objects.get(dDept="不公開")
@@ -573,3 +573,13 @@ def login_error(request):
         return redirect('/')
     else:   # 否則顯示錯誤頁面
         return render(request, 'web/login_error.html')
+
+
+# 隱私權政策
+def privacy(request):
+    return render(request, 'web/privacy.html')
+
+
+# 服務條款
+def terms(request):
+    return render(request, 'web/terms.html')
