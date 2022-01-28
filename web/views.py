@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Avg
 from .models import Department, Class, Profile, Comment, Follow
-from .forms import RegisterForm, LoginForm, ProfileDeptForm
+from .forms import ProfileDeptForm
 from django.core.paginator import Paginator
 
 
@@ -129,77 +129,18 @@ def class_detail(request, id):
     return render(request, "web/class_detail.html", context)
 
 
-# 註冊
-def register(request):
-    error = False
-    error_msg = ""
-    # 註冊表單
-    form = RegisterForm()
-
-    if request.method == "POST":    # POST
-        username = request.POST["username"]
-        if str(username).endswith('@gmail.com'):    # gmail結尾
-            form = RegisterForm(request.POST)
-            if form.is_valid():     # 有效輸入
-                # 儲存使用者
-                form.save()
-                # 預設系所為不公開
-                user = User.objects.get(username=request.POST["username"])
-                dept = Department.objects.get(dDept="不公開")
-                # 新增profile
-                Profile.objects.create(pUID=user, pDept=dept)
-
-                return redirect('/web/login')
-            else:
-                error = True
-                error_msg = "電子信箱或密碼不符合規定!"
-        else:
-            error = True
-            error_msg = "電子信箱必須為gmail.com結尾!"
-
-    context = {
-        'form': form,
-        'error': error,
-        'error_msg': error_msg,
-    }
-
-    return render(request, 'web/register.html', context)
-
-
 # 登入
 def log_in(request):
     # 已經登入則重新導向到首頁
     if request.user.is_authenticated:
         return redirect('/')
 
-    # 登入表單
-    form = LoginForm()
-
-    error = False
-    if request.method == "POST":
-        # POST資料
-        username = request.POST["username"]
-        password = request.POST["password"]
-        next = request.POST["next"]
-        # 使用者認證
-        user = authenticate(username=username, password=password)
-        if user != None and user.is_active:  # 認證+是否可登入
-            # 登入
-            login(request, user)
-
-            return redirect(next)
-        else:
-            error = True
-    else:
-        # 取得next參數
-        try:
-            next = request.GET['next']
-        except:
-            next = "/"
+    try:
+        next = request.GET['next']
+    except:
+        next = "/"
 
     context = {
-        'form': form,
-        'error': error,
         'next': next,
     }
 
@@ -209,7 +150,6 @@ def log_in(request):
 # 登出
 @login_required(login_url="login")
 def log_out(request):
-    # 登出
     logout(request)
 
     # 取得next參數
