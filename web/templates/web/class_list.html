@@ -27,7 +27,7 @@
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="請輸入關鍵字..." name="q"
                     value="{{ request.GET.q|default:'' }}">
-                <button type="submit" class="btn btn-primary">查詢</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>查詢</button>
             </div>
         </div>
     </div>
@@ -46,7 +46,8 @@
                             {% csrf_token %}
 
                             <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                            <button type="submit" class="text-warning" style="background: none; border: none; padding: 0;">
+                            <button type="submit" class="text-warning"
+                                style="background: none; border: none; padding: 0;">
                                 {% if class.followed %}
                                 <i class="bi bi-star-fill"></i>
                                 {% else %}
@@ -117,7 +118,8 @@
         <form action="" method="GET">
             <input type="hidden" name="t" value="{{ request.GET.t }}">
             <input type="hidden" name="q" value="{{ request.GET.q }}">
-            Page <input type="number" name="page" style="width: 60px;" min="1" max="{{ classes.paginator.num_pages }}" value="{{ classes.number }}"> of {{ classes.paginator.num_pages }}
+            Page <input type="number" name="page" style="width: 60px;" min="1" max="{{ classes.paginator.num_pages }}"
+                value="{{ classes.number }}"> of {{ classes.paginator.num_pages }}
             <input class="btn btn-outline-primary btn-sm" type="submit" value="GO">
         </form>
     </div>
