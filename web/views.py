@@ -1,4 +1,4 @@
-from importlib.metadata import requires
+import json
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -60,13 +60,13 @@ def class_list(request):
         page_number = request.GET.get('page')
         classes = paginator.get_page(page_number)
     except:
-        classes = paginator.get_page(1) # 失敗則返回第一頁
-    
+        classes = paginator.get_page(1)  # 失敗則返回第一頁
+
     # 組合成課程+追蹤紀錄的列表
     class_list = list()
     for class_ in classes:
         if user.is_authenticated:
-        # 取得該名使用者是否追蹤這堂課
+            # 取得該名使用者是否追蹤這堂課
             follow = Follow.objects.filter(fUID=user).filter(fCID=class_)
             if len(follow) == 0:    # 沒追蹤
                 class_list.append({"class": class_, "followed": False})
@@ -77,11 +77,11 @@ def class_list(request):
 
     context = {
         'class_list': class_list,
-        'classes': classes, # 還是有傳classes是為了要分頁
+        'classes': classes,  # 還是有傳classes是為了要分頁
     }
 
     return render(request, 'web/class_list.html', context)
-    
+
 
 # 課程詳細內頁
 def class_detail(request, id):
@@ -91,14 +91,14 @@ def class_detail(request, id):
     try:
         error = request.GET["error"]
     except:
-        error = "false"
+        pass
 
     # 取得課程詳細資料
     try:
         class_obj = Class.objects.get(pk=id)
     except Class.DoesNotExist:
         raise Http404('Class does not exist')
-    
+
     # 取得該名使用者是否追蹤這堂課
     followed = False
     if user.is_authenticated:
@@ -242,6 +242,7 @@ def check_number(num):
         if int(num) >= 0 and int(num) <= 10:
             return True
     return False
+
 
 # 確認字串長度(10~1000)
 def check_string(string):
@@ -453,18 +454,17 @@ def no_premission(request):
 
 # 追蹤(星號)
 @login_required(login_url="login")
-def follow(request, id=None):
+def follow(request):
     if request.method == "POST":
+        print(request.POST)
         user = request.user     # 當前使用者
-        next = "/"
-        if request.POST["next"] != None:
-            next = request.POST["next"]     # 原本的位置
 
-        if id == None or id == "":  # id為空
+        if request.POST["class_id"] == None:  # id為空
             raise Http404('Class can not be empty.')
         else:
+            class_id = request.POST["class_id"]
             try:
-                class_obj = Class.objects.get(id=id)    # 取得該堂課程
+                class_obj = Class.objects.get(id=class_id)    # 取得該堂課程
             except Class.DoesNotExist:
                 raise Http404('Class does not exist.')
 
@@ -479,15 +479,19 @@ def follow(request, id=None):
                 # 追蹤數+1
                 class_obj.cFollow += 1
                 class_obj.save()
+                follow_status = True
             else:   # 有追蹤則刪除
                 follow.delete()
                 # 追蹤數-1
                 class_obj.cFollow -= 1
                 class_obj.save()
+                follow_status = False
 
-            return redirect(next)   # 返回原本的位置
+            print(class_obj.cFollow)
+
+            return HttpResponse(json.dumps({"status": follow_status, "number": class_obj.cFollow}))
     else:
-        return redirect(f"/web/class/{id}") # 返回該堂課程
+        return HttpResponse("Follow OK!")
 
 
 # 第一次登入
@@ -499,11 +503,11 @@ def login_new(request):
         profile = Profile.objects.get(pUID=user)
 
         return redirect('/web/profile/edit')
-    except: # 沒有profile
+    except:  # 沒有profile
         # 新增profile
         dept = Department.objects.get(dDept="不公開")
         Profile.objects.create(pUID=user, pDept=dept)
-    
+
         return render(request, 'web/login_new.html')
 
 

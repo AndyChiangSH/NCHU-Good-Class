@@ -36,13 +36,13 @@
 {% if classes %}
 <div class="row">
     {% for class in class_list %}
-    <a href="{% url 'class_detail' class.class.id %}" class="col-12 col-sm-6 col-md-4 col-lg-3 text-decoration-none">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="card m-2">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <p class="card-text text-danger fw-bold mb-0">{{ class.class.id }}</p>
                     <div>
-                        <form action="{% url 'follow' class.class.id %}" method="POST">
+                        {% comment %} <form action="{% url 'follow' class.class.id %}" method="POST">
                             {% csrf_token %}
 
                             <input type="hidden" name="next" value="{{ request.get_full_path }}">
@@ -54,17 +54,27 @@
                                 <i class="bi bi-star"></i>
                                 {% endif %}
                             </button>
-                        </form>
+                        </form> {% endcomment %}
+                        <span id="#n{{ class.class.id }}" class="text-warning me-1 small">{{ class.class.cFollow }}</span>
+                        <button id="#b{{ class.class.id }}" class="btn-follow text-warning"
+                            onclick="follow('{{ class.class.id }}');">
+                            {% if class.followed %}
+                            <i class="bi bi-star-fill"></i>
+                            {% else %}
+                            <i class="bi bi-star"></i>
+                            {% endif %}
+                        </button>
                     </div>
                 </div>
-                <span class="card-title text-dark fw-bold fs-3">{{ class.class.cName }}</span>
+                <a class="text-decoration-none" href="{% url 'class_detail' class.class.id %}"><span
+                        class="card-title text-dark fw-bold fs-3">{{ class.class.cName }}</span></a>
                 <br>
                 <span class="card-text text-secondary">{{ class.class.cType }} | {{ class.class.cDept }}</span>
                 <br>
                 <span class="card-text text-secondary">{{ class.class.cProfessor }}</span>
             </div>
         </div>
-    </a>
+    </div>
     {% endfor %}
 </div>
 {% else %}
@@ -125,4 +135,35 @@
     </div>
 </div>
 {% endif %}
+
+<script>
+    function follow(class_id) {
+        // alert(class_id);
+        $.ajax({
+            url: "/web/follow/",
+            method: "POST",
+            dataType: "json",
+            data: {
+                class_id: class_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (res) {   // POST success
+                // alert("ajax success");
+                // console.log(res);
+                let button_id = "#b" + class_id;
+                let number_id = "#n" + class_id;
+                if (res["status"]) { // follow
+                    document.getElementById(button_id).innerHTML = '<i class="bi bi-star-fill"></i>';
+                }
+                else {  // unfollow
+                    document.getElementById(button_id).innerHTML = '<i class="bi bi-star"></i>';
+                }
+                document.getElementById(number_id).innerHTML = res["number"]
+            },
+            error: function (err) {     // POST error
+                alert("[AJAX] Follow error!");
+            },
+        });
+    }
+</script>
 {% endblock content %}

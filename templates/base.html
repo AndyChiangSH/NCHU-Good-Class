@@ -67,6 +67,12 @@
             background-color: #0e7c64;
         }
 
+        .btn-follow {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
         #btn-back-to-top {
             position: fixed;
             bottom: 20px;
@@ -79,6 +85,7 @@
         }
     </style>
     {% block style %}{% endblock style %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -178,8 +185,8 @@
         };
 
         function scrollFunction() {
-            console.log(document.body.scrollTop)
-            console.log(document.documentElement.scrollTop)
+            // console.log(document.body.scrollTop)
+            // console.log(document.documentElement.scrollTop)
             if (
                 document.body.scrollTop > 500 ||
                 document.documentElement.scrollTop > 500
