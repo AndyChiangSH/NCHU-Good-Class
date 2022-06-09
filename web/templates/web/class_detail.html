@@ -98,11 +98,6 @@
 </div>
 
 <div>
-    {% if error == "true" %}
-    <div class="alert alert-danger my-3" role="alert">
-        你已經評論過了!
-    </div>
-    {% endif %}
     {% if comments %}
     {% for comment in comments %}
     <div class="card my-3">

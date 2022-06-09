@@ -52,6 +52,10 @@
             color: #0e7c64;
         }
 
+        .bg-main-color {
+            background-color: #11a081;
+        }
+
         .btn-main-color {
             color: white;
             background-color: #11a081;
@@ -90,6 +94,13 @@
 
         .mynavbar .nav-link:hover {
             color: rgba(255, 255, 255, 1) !important;
+        }
+
+        .toast-container {
+            position: fixed;
+            left: 10px;
+            bottom: 10px;
+            z-index: 1000;
         }
     </style>
     {% block style %}{% endblock style %}
@@ -147,6 +158,7 @@
         {% endblock content %}
     </div>
 
+    <!-- footer start -->
     <div class="container footer">
         <hr class="my-3">
         <div class="d-flex flex-wrap justify-content-center my-4">
@@ -169,6 +181,26 @@
         </div>
         <p class="text-center text-muted" style="font-size: 10px;">Copyright © 2022 NCHU Good Class</p>
     </div>
+    <!-- footer end -->
+
+    <!-- message toast start -->
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+        <div class="toast bg-{{ message.tags }} text-white align-items-center" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <!-- message toast end -->
 
     <!-- Optional JavaScript; choose one of the two! -->
 
@@ -210,6 +242,18 @@
         function backToTop() {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
+        }
+    </script>
+
+    <!-- message toast -->
+    <script>
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl)
+        })
+
+        for (let i = 0; i < toastList.length; i++) {
+            toastList[i].show()
         }
     </script>
 </body>

@@ -22,6 +22,7 @@ urlpatterns = [
     path('follow/', views.follow, name="follow"),   # 追蹤
     path('login/', views.log_in, name="login"),     # 登入
     path('login_new/', views.login_new, name="login_new"),  # 首次登入
+    path('login_success/', views.login_success, name="login_success"),  # 登入成功
     path('login_error/', views.login_error, name="login_error"),    # 登入失敗
     path('logout/', views.log_out, name="logout"),  # 登出
     path('privacy/', views.privacy, name="privacy"),   # 隱私權政策

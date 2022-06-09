@@ -1,4 +1,3 @@
-import json
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -7,9 +6,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Avg
+from django.core.paginator import Paginator
+from django.contrib import messages
 from .models import Department, Class, Profile, Comment, Follow
 from .forms import ProfileDeptForm
-from django.core.paginator import Paginator
+import json
 
 
 # 首頁
@@ -86,12 +87,6 @@ def class_list(request):
 # 課程詳細內頁
 def class_detail(request, id):
     user = request.user
-    # 顯示錯誤訊息
-    error = "false"
-    try:
-        error = request.GET["error"]
-    except:
-        pass
 
     # 取得課程詳細資料
     try:
@@ -122,43 +117,10 @@ def class_detail(request, id):
     context = {
         "class": class_obj,
         "comments": comment_list,
-        "error": error,
         "followed": followed,
     }
 
     return render(request, "web/class_detail.html", context)
-
-
-# 登入
-def log_in(request):
-    # 已經登入則重新導向到首頁
-    if request.user.is_authenticated:
-        return redirect('/')
-
-    try:
-        next = request.GET['next']
-    except:
-        next = "/"
-
-    context = {
-        'next': next,
-    }
-
-    return render(request, 'web/login.html', context)
-
-
-# 登出
-@login_required(login_url="login")
-def log_out(request):
-    logout(request)
-
-    # 取得next參數
-    try:
-        next = request.GET['next']
-    except:
-        next = "/"
-
-    return redirect(next)
 
 
 # 個人資料頁面
@@ -189,11 +151,16 @@ def profile_edit(request):
     form = ProfileDeptForm(initial={'dept': user_obj.pDept})
 
     if request.method == "POST":
-        # 儲存使用者回傳的系所
-        form_dept = request.POST["dept"]    # 回傳的系所名稱
-        dept_obj = Department.objects.get(id=form_dept)  # 取得對應的系所物件
-        user_obj.pDept = dept_obj   # 修改系所
-        user_obj.save()  # 儲存
+        try:
+            # 儲存使用者回傳的系所
+            form_dept = request.POST["dept"]    # 回傳的系所名稱
+            dept_obj = Department.objects.get(id=form_dept)  # 取得對應的系所物件
+            user_obj.pDept = dept_obj   # 修改系所
+            user_obj.save()  # 儲存
+
+            messages.add_message(request, messages.SUCCESS, "修改系所成功")
+        except:
+            messages.add_message(request, messages.ERROR, "修改系所失敗!")
 
         return redirect(f"/web/profile/")
     else:
@@ -342,11 +309,16 @@ def comment_create(request, id):
                 # 更新平均
                 update_avg(class_)
 
-                return redirect(f"/web/class/{id}")
+                messages.add_message(request, messages.SUCCESS, "新增評論成功")
+            else:
+                messages.add_message(request, messages.ERROR, "新增評論失敗!")
+
+            return redirect(f"/web/class/{id}/")
 
         return render(request, 'web/comment_create.html')
     else:
-        return redirect(f"/web/class/{id}/?error=true")
+        messages.add_message(request, messages.ERROR, "你已經評論過了，不得重複評論!")
+        return redirect(f"/web/class/{id}/")
 
 
 # 編輯評論
@@ -391,6 +363,10 @@ def comment_edit(request, id=None):
             # 更新平均
             update_avg(comment.mCID)
 
+            messages.add_message(request, messages.SUCCESS, "修改評論成功")
+            return redirect(next)
+        else:
+            messages.add_message(request, messages.ERROR, "修改評論失敗!")
             return redirect(next)
     else:
         # GET參數
@@ -426,11 +402,16 @@ def comment_delete(request, id=None):
         return redirect("/web/no_premission")
 
     if request.method == "POST":
-        next = request.POST["next"]
-        # 刪除資料
-        comment.delete()
-        # 更新平均
-        update_avg(comment.mCID)
+        try:
+            next = request.POST["next"]
+            # 刪除資料
+            comment.delete()
+            # 更新平均
+            update_avg(comment.mCID)
+
+            messages.add_message(request, messages.SUCCESS, "刪除評論成功")
+        except:
+            messages.add_message(request, messages.ERROR, "刪除評論失敗!")
 
         return redirect(next)
     else:
@@ -495,6 +476,44 @@ def follow(request):
         return HttpResponse("Follow OK!")
 
 
+# 登入
+def log_in(request):
+    # 已經登入則重新導向到首頁
+    if request.user.is_authenticated:
+        messages.add_message(request, messages.ERROR, "你已經登入了!")
+        return redirect('/')
+
+    try:
+        next = request.GET['next']
+    except:
+        next = "/"
+
+    context = {
+        'next': next,
+    }
+
+    return render(request, 'web/login.html', context)
+
+
+# 登出
+@login_required(login_url="login")
+def log_out(request):
+    try:
+        logout(request)
+        messages.add_message(request, messages.SUCCESS, "登出成功")
+    except:
+        messages.add_message(request, messages.ERROR, "登出失敗")
+
+    # 取得next參數
+    next = "/"
+    try:
+        next = request.GET['next']
+    except:
+        pass
+
+    return redirect(next)
+
+
 # 第一次登入
 @login_required(login_url="login")
 def login_new(request):
@@ -510,6 +529,13 @@ def login_new(request):
         Profile.objects.create(pUID=user, pDept=dept)
 
         return render(request, 'web/login_new.html')
+
+
+# 登入成功
+@login_required(login_url="login")
+def login_success(request):
+    messages.add_message(request, messages.SUCCESS, "登入成功")
+    return redirect("/")
 
 
 # 登入錯誤

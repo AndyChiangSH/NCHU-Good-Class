@@ -10,13 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from django.contrib import messages
+import dj_database_url
+from pathlib import Path
 import os
 from dotenv import load_dotenv
 
 # load environment var
 load_dotenv()
 
-from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -94,12 +96,12 @@ WSGI_APPLICATION = 'nchugoodclass.wsgi.application'
 # PostgerSQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  #PostgreSQL
-        'NAME': 'nchugoodclass',  #資料庫名稱
-        'USER': 'postgres',  #資料庫帳號
-        'PASSWORD': os.environ.get("PG_PASSWORD", ""),  #資料庫密碼
-        'HOST': 'localhost',  #Server(伺服器)位址
-        'PORT': '5432'  #PostgreSQL Port號
+        'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL
+        'NAME': 'nchugoodclass',  # 資料庫名稱
+        'USER': 'postgres',  # 資料庫帳號
+        'PASSWORD': os.environ.get("PG_PASSWORD", ""),  # 資料庫密碼
+        'HOST': 'localhost',  # Server(伺服器)位址
+        'PORT': '5432'  # PostgreSQL Port號
     }
 }
 
@@ -155,7 +157,6 @@ IMPORT_EXPORT_USE_TRANSACTIONS = True
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
 
 # Heroku PostgreSQL
-import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
@@ -171,13 +172,22 @@ SESSION_COOKIE_AGE = 604800
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2', # Google login
+    'social_core.backends.google.GoogleOAuth2',  # Google login
     'django.contrib.auth.backends.ModelBackend',    # username+password login
 )
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GOOGLE_OAUTH2_KEY", "")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GOOGLE_OAUTH2_SECRET", "")
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/web/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/web/login_success/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/web/login_error/'
 SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/web/login_new/'
+
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'info',
+    messages.INFO: 'primary',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
