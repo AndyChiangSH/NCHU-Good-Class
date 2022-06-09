@@ -26,14 +26,11 @@
                     </a>
                 </p>
                 <div>
-                    <form action="{% url 'follow' follow.fCID.id %}" method="POST">
-                        {% csrf_token %}
-
-                        <input type="hidden" name="next" value="{{ request.path }}">
-                        <button type="submit" class="text-warning" style="background: none; border: none; padding: 0;">
-                            <i class="bi bi-star-fill"></i>
-                        </button>
-                    </form>
+                    <span id="#n{{ follow.fCID.id }}" class="text-warning me-1 small">{{ follow.fCID.cFollow }}</span>
+                    <button id="#b{{ follow.fCID.id }}" class="btn-follow text-warning"
+                        onclick="follow('{{ follow.fCID.id }}');">
+                        <i class="bi bi-star-fill"></i>
+                    </button>
                 </div>
             </div>
             <div class="d-flex flex-wrap justify-content-between">
@@ -49,4 +46,36 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+    // AJAX 加入/取消追蹤
+    function follow(class_id) {
+        // alert(class_id);
+        $.ajax({
+            url: "/web/follow/",
+            method: "POST",
+            dataType: "json",
+            data: {
+                class_id: class_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (res) {   // POST success
+                // alert("ajax success");
+                // console.log(res);
+                let button_id = "#b" + class_id;
+                let number_id = "#n" + class_id;
+                if (res["status"]) { // follow
+                    document.getElementById(button_id).innerHTML = '<i class="bi bi-star-fill"></i>';
+                }
+                else {  // unfollow
+                    document.getElementById(button_id).innerHTML = '<i class="bi bi-star"></i>';
+                }
+                document.getElementById(number_id).innerHTML = res["number"]
+            },
+            error: function (err) {     // POST error
+                alert("[AJAX] Follow error!");
+            },
+        });
+    }
+</script>
 {% endblock content %}

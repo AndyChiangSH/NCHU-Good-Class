@@ -83,6 +83,14 @@
             height: 60px;
             border-radius: 50%
         }
+
+        .mynavbar .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .mynavbar .nav-link:hover {
+            color: rgba(255, 255, 255, 1) !important;
+        }
     </style>
     {% block style %}{% endblock style %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -95,7 +103,7 @@
     </button>
     <!-- Back to top button end-->
 
-    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: #11a081;">
+    <nav class="mynavbar navbar navbar-expand-md navbar-dark" style="background-color: #11a081;">
         <div class="container-fluid">
             <div class="d-flex align-items-center flex-wrap me-3">
                 <a class="navbar-brand fw-bold fs-4" href="{% url 'index' %}">
@@ -103,7 +111,7 @@
                         class="d-inline-block align-text-top">
                     中興好課
                 </a>
-                <p class="badge bg-light text-main-color text-wrap my-1">0.2 測試版</p>
+                <p class="badge bg-light text-main-color text-wrap my-1">0.3 測試版</p>
             </div>
             <button class=" navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"

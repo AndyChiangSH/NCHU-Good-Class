@@ -15,18 +15,6 @@
     <span class="text-danger fw-bold fs-3">{{ class.id }}</span>
     <div class="d-flex align-items-center">
         <span id="#n{{ class.id }}" class="text-warning me-2">{{ class.cFollow }}</span>
-        {% comment %} <form action="{% url 'follow' class.id %}" method="POST">
-            {% csrf_token %}
-
-            <input type="hidden" name="next" value="{{ request.path }}">
-            <button type="submit" class="text-warning fs-3" style="background: none; border: none; padding: 0;">
-                {% if followed %}
-                <i class="bi bi-star-fill"></i>
-                {% else %}
-                <i class="bi bi-star"></i>
-                {% endif %}
-            </button>
-        </form> {% endcomment %}
         <button id="#b{{ class.id }}" class="btn-follow text-warning fs-3"
             onclick="follow('{{ class.id }}');">
             {% if followed %}
@@ -208,6 +196,7 @@
     );
 </script>
 <script>
+    // AJAX 加入/取消追蹤
     function follow(class_id) {
         // alert(class_id);
         $.ajax({
