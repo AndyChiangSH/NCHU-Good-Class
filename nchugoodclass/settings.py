@@ -186,7 +186,7 @@ SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/web/login_new/'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'info',
-    messages.INFO: 'primary',
+    messages.INFO: 'main-color',
     messages.SUCCESS: 'success',
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',

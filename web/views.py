@@ -130,7 +130,10 @@ def profile(request):
     user = request.user
 
     # 使用者系所
-    profile_dept = Profile.objects.get(pUID__id=user.id)
+    try:
+        profile_dept = Profile.objects.get(pUID__id=user.id)
+    except:
+        return redirect("/web/login_new")
 
     context = {
         "profile_dept": profile_dept
@@ -522,12 +525,14 @@ def login_new(request):
     try:    # 有profile
         profile = Profile.objects.get(pUID=user)
 
+        messages.add_message(request, messages.INFO, "首次登入請先設定你的系所!")
         return redirect('/web/profile/edit')
     except:  # 沒有profile
         # 新增profile
         dept = Department.objects.get(dDept="不公開")
         Profile.objects.create(pUID=user, pDept=dept)
 
+        messages.add_message(request, messages.INFO, "首次登入請先設定你的系所!")
         return render(request, 'web/login_new.html')
 
 

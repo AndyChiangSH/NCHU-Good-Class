@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} | 你的追蹤清單: {{ request.user }}{% endblock title %}
+{% block title %} | 你的追蹤清單{% endblock title %}
 
 {% block style %}
 <style>
@@ -41,8 +41,9 @@
     </div>
     {% endfor %}
     {% else %}
-    <div class="alert alert-warning my-3" role="alert">
-        你還沒追蹤任何課程，快去追蹤一個吧!
+    <div class="alert alert-warning my-3 d-flex flex-wrap justify-content-between align-items-center" role="alert">
+        <span>你還沒追蹤任何課程，快去追蹤一個吧!</span>
+        <a class="btn btn-warning" href="{% url 'class_list' %}">前往課程清單</a>
     </div>
     {% endif %}
 </div>
