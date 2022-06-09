@@ -42,19 +42,6 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <p class="card-text text-danger fw-bold mb-0">{{ class.class.id }}</p>
                     <div>
-                        {% comment %} <form action="{% url 'follow' class.class.id %}" method="POST">
-                            {% csrf_token %}
-
-                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                            <button type="submit" class="text-warning"
-                                style="background: none; border: none; padding: 0;">
-                                {% if class.followed %}
-                                <i class="bi bi-star-fill"></i>
-                                {% else %}
-                                <i class="bi bi-star"></i>
-                                {% endif %}
-                            </button>
-                        </form> {% endcomment %}
                         <span id="#n{{ class.class.id }}" class="text-warning me-1 small">{{ class.class.cFollow }}</span>
                         <button id="#b{{ class.class.id }}" class="btn-follow text-warning"
                             onclick="follow('{{ class.class.id }}');">
@@ -136,6 +123,7 @@
 </div>
 {% endif %}
 
+{% if user.is_authenticated %}
 <script>
     function follow(class_id) {
         // alert(class_id);
@@ -166,4 +154,5 @@
         });
     }
 </script>
+{% endif %}
 {% endblock content %}

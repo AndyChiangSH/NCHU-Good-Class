@@ -440,7 +440,7 @@ def no_premission(request):
 @login_required(login_url="login")
 def follow(request):
     if request.method == "POST":
-        print(request.POST)
+        # print(request.POST)
         user = request.user     # 當前使用者
 
         if request.POST["class_id"] == None:  # id為空
@@ -471,7 +471,6 @@ def follow(request):
                 class_obj.save()
                 follow_status = False
 
-            # print(class_obj.cFollow)
             response = {"status": follow_status, "number": class_obj.cFollow}
 
             return HttpResponse(json.dumps(response))

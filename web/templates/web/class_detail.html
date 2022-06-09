@@ -190,6 +190,7 @@
         config
     );
 </script>
+{% if user.is_authenticated %}
 <script>
     // AJAX 加入/取消追蹤
     function follow(class_id) {
@@ -221,4 +222,5 @@
         });
     }
 </script>
+{% endif %}
 {% endblock content %}
